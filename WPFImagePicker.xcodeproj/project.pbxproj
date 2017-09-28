@@ -1,0 +1,758 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA2158F71F7514100099C2A6 /* WPFImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */; };
+		FA2158F91F751C760099C2A6 /* WPFIPDeniedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */; };
+		FA2158FB1F751CD10099C2A6 /* WPFIPGridVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */; };
+		FA86EA321F46D511006D729A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA2A1F46D511006D729A /* Assets.xcassets */; };
+		FA86EA351F46D511006D729A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA2F1F46D511006D729A /* Info.plist */; };
+		FA86EA3E1F46D518006D729A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA391F46D518006D729A /* Info.plist */; };
+		FA86EA401F46D518006D729A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA3C1F46D518006D729A /* Info.plist */; };
+		FA86EA431F46D68F006D729A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86EA291F46D511006D729A /* AppDelegate.swift */; };
+		FA86EA461F46D6CA006D729A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA2A1F46D511006D729A /* Assets.xcassets */; };
+		FA86EA4B1F46D705006D729A /* WPFImagePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = FA86E9F31F46D3FC006D729A /* WPFImagePicker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA9406351F70F66400A29BE8 /* WPFImagePicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA9406341F70F66400A29BE8 /* WPFImagePicker.bundle */; };
+		FA9406361F70F66400A29BE8 /* WPFImagePicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA9406341F70F66400A29BE8 /* WPFImagePicker.bundle */; };
+		FA965D101F73B20900E9F96A /* WPFIPBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA965D0F1F73B20900E9F96A /* WPFIPBaseVC.swift */; };
+		FAA4CCDD1F7BB93800CE340B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAA4CCDF1F7BB93800CE340B /* Localizable.strings */; };
+		FAA4D2501F4E890E006888F6 /* WPFIPListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4D24F1F4E890E006888F6 /* WPFIPListVC.swift */; };
+		FAA4D2521F4EA723006888F6 /* WPFIPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4D2511F4EA723006888F6 /* WPFIPManager.swift */; };
+		FABEFDE71F4D68D50082222D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABEFDE61F4D68D50082222D /* ViewController.swift */; };
+		FAE3F6D01F4C255A00EA4204 /* WPFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE3F6CF1F4C255A00EA4204 /* WPFoundation.swift */; };
+		FAF39F2C1F711AC50082B167 /* WPFImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA86E9E41F46D365006D729A /* WPFImagePicker.framework */; };
+		FAF39F2D1F711AC50082B167 /* WPFImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA86E9E41F46D365006D729A /* WPFImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FA86EA0E1F46D4A3006D729A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA86E9DB1F46D365006D729A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA86E9F91F46D4A3006D729A;
+			remoteInfo = "WPFImagePicker-Demo";
+		};
+		FA86EA191F46D4A3006D729A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA86E9DB1F46D365006D729A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA86E9F91F46D4A3006D729A;
+			remoteInfo = "WPFImagePicker-Demo";
+		};
+		FAF39F2E1F711AC50082B167 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA86E9DB1F46D365006D729A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA86E9E31F46D365006D729A;
+			remoteInfo = WPFImagePicker;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FAF39F301F711AC50082B167 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FAF39F2D1F711AC50082B167 /* WPFImagePicker.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFImagePicker.swift; sourceTree = "<group>"; };
+		FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPDeniedVC.swift; sourceTree = "<group>"; };
+		FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPGridVC.swift; sourceTree = "<group>"; };
+		FA86E9E41F46D365006D729A /* WPFImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WPFImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86E9F21F46D3FC006D729A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86E9F31F46D3FC006D729A /* WPFImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPFImagePicker.h; sourceTree = "<group>"; };
+		FA86E9FA1F46D4A3006D729A /* WPFImagePicker-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WPFImagePicker-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86EA0D1F46D4A3006D729A /* WPFImagePicker-DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WPFImagePicker-DemoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86EA181F46D4A3006D729A /* WPFImagePicker-DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WPFImagePicker-DemoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86EA291F46D511006D729A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FA86EA2A1F46D511006D729A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA86EA2F1F46D511006D729A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86EA391F46D518006D729A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86EA3A1F46D518006D729A /* WPFImagePicker_DemoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WPFImagePicker_DemoTests.swift; sourceTree = "<group>"; };
+		FA86EA3C1F46D518006D729A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86EA3D1F46D518006D729A /* WPFImagePicker_DemoUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WPFImagePicker_DemoUITests.swift; sourceTree = "<group>"; };
+		FA9406341F70F66400A29BE8 /* WPFImagePicker.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WPFImagePicker.bundle; sourceTree = "<group>"; };
+		FA965D0F1F73B20900E9F96A /* WPFIPBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPBaseVC.swift; sourceTree = "<group>"; };
+		FAA4CCDE1F7BB93800CE340B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FAA4CCE51F7BB98D00CE340B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FAA4CCE61F7BBA0F00CE340B /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FAA4D24F1F4E890E006888F6 /* WPFIPListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WPFIPListVC.swift; sourceTree = "<group>"; };
+		FAA4D2511F4EA723006888F6 /* WPFIPManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WPFIPManager.swift; sourceTree = "<group>"; };
+		FABEFDE61F4D68D50082222D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FAE3F6CF1F4C255A00EA4204 /* WPFoundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WPFoundation.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA86E9E01F46D365006D729A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86E9F71F46D4A3006D729A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAF39F2C1F711AC50082B167 /* WPFImagePicker.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA0A1F46D4A3006D729A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA151F46D4A3006D729A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA86E9DA1F46D365006D729A = {
+			isa = PBXGroup;
+			children = (
+				FA86E9F11F46D3FC006D729A /* Sources */,
+				FA86E9EF1F46D3A4006D729A /* Demo */,
+				FA86EA371F46D518006D729A /* Tests */,
+				FA86E9E51F46D365006D729A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FA86E9E51F46D365006D729A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA86E9E41F46D365006D729A /* WPFImagePicker.framework */,
+				FA86E9FA1F46D4A3006D729A /* WPFImagePicker-Demo.app */,
+				FA86EA0D1F46D4A3006D729A /* WPFImagePicker-DemoTests.xctest */,
+				FA86EA181F46D4A3006D729A /* WPFImagePicker-DemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA86E9EF1F46D3A4006D729A /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				FA86EA281F46D511006D729A /* WPFImagePicker-Demo */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
+		FA86E9F11F46D3FC006D729A /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FAE3F6C01F4BE84C00EA4204 /* Core */,
+				FA86E9F21F46D3FC006D729A /* Info.plist */,
+				FA86E9F31F46D3FC006D729A /* WPFImagePicker.h */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		FA86EA281F46D511006D729A /* WPFImagePicker-Demo */ = {
+			isa = PBXGroup;
+			children = (
+				FA86EA291F46D511006D729A /* AppDelegate.swift */,
+				FABEFDE61F4D68D50082222D /* ViewController.swift */,
+				FA86EA2A1F46D511006D729A /* Assets.xcassets */,
+				FA86EA2F1F46D511006D729A /* Info.plist */,
+				FAA4CCDF1F7BB93800CE340B /* Localizable.strings */,
+			);
+			path = "WPFImagePicker-Demo";
+			sourceTree = "<group>";
+		};
+		FA86EA371F46D518006D729A /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				FA86EA381F46D518006D729A /* WPFImagePicker-DemoTests */,
+				FA86EA3B1F46D518006D729A /* WPFImagePicker-DemoUITests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		FA86EA381F46D518006D729A /* WPFImagePicker-DemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				FA86EA391F46D518006D729A /* Info.plist */,
+				FA86EA3A1F46D518006D729A /* WPFImagePicker_DemoTests.swift */,
+			);
+			path = "WPFImagePicker-DemoTests";
+			sourceTree = "<group>";
+		};
+		FA86EA3B1F46D518006D729A /* WPFImagePicker-DemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FA86EA3C1F46D518006D729A /* Info.plist */,
+				FA86EA3D1F46D518006D729A /* WPFImagePicker_DemoUITests.swift */,
+			);
+			path = "WPFImagePicker-DemoUITests";
+			sourceTree = "<group>";
+		};
+		FAE3F6C01F4BE84C00EA4204 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FAA4D24F1F4E890E006888F6 /* WPFIPListVC.swift */,
+				FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */,
+				FAA4D2511F4EA723006888F6 /* WPFIPManager.swift */,
+				FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */,
+				FA965D0F1F73B20900E9F96A /* WPFIPBaseVC.swift */,
+				FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */,
+				FAE3F6CF1F4C255A00EA4204 /* WPFoundation.swift */,
+				FA9406341F70F66400A29BE8 /* WPFImagePicker.bundle */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FA86E9E11F46D365006D729A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA86EA4B1F46D705006D729A /* WPFImagePicker.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FA86E9E31F46D365006D729A /* WPFImagePicker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86E9EC1F46D365006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker" */;
+			buildPhases = (
+				FA86E9DF1F46D365006D729A /* Sources */,
+				FA86E9E01F46D365006D729A /* Frameworks */,
+				FA86E9E11F46D365006D729A /* Headers */,
+				FA86E9E21F46D365006D729A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WPFImagePicker;
+			productName = WPFImagePicker;
+			productReference = FA86E9E41F46D365006D729A /* WPFImagePicker.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		FA86E9F91F46D4A3006D729A /* WPFImagePicker-Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86EA1F1F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-Demo" */;
+			buildPhases = (
+				FA86E9F61F46D4A3006D729A /* Sources */,
+				FA86E9F71F46D4A3006D729A /* Frameworks */,
+				FA86E9F81F46D4A3006D729A /* Resources */,
+				FAF39F301F711AC50082B167 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FAF39F2F1F711AC50082B167 /* PBXTargetDependency */,
+			);
+			name = "WPFImagePicker-Demo";
+			productName = "WPFImagePicker-Demo";
+			productReference = FA86E9FA1F46D4A3006D729A /* WPFImagePicker-Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FA86EA0C1F46D4A3006D729A /* WPFImagePicker-DemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86EA221F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-DemoTests" */;
+			buildPhases = (
+				FA86EA091F46D4A3006D729A /* Sources */,
+				FA86EA0A1F46D4A3006D729A /* Frameworks */,
+				FA86EA0B1F46D4A3006D729A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA86EA0F1F46D4A3006D729A /* PBXTargetDependency */,
+			);
+			name = "WPFImagePicker-DemoTests";
+			productName = "WPFImagePicker-DemoTests";
+			productReference = FA86EA0D1F46D4A3006D729A /* WPFImagePicker-DemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FA86EA171F46D4A3006D729A /* WPFImagePicker-DemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86EA251F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-DemoUITests" */;
+			buildPhases = (
+				FA86EA141F46D4A3006D729A /* Sources */,
+				FA86EA151F46D4A3006D729A /* Frameworks */,
+				FA86EA161F46D4A3006D729A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA86EA1A1F46D4A3006D729A /* PBXTargetDependency */,
+			);
+			name = "WPFImagePicker-DemoUITests";
+			productName = "WPFImagePicker-DemoUITests";
+			productReference = FA86EA181F46D4A3006D729A /* WPFImagePicker-DemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA86E9DB1F46D365006D729A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = alex;
+				TargetAttributes = {
+					FA86E9E31F46D365006D729A = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = RTCETB2ULQ;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Automatic;
+					};
+					FA86E9F91F46D4A3006D729A = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = RTCETB2ULQ;
+						ProvisioningStyle = Automatic;
+					};
+					FA86EA0C1F46D4A3006D729A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+						TestTargetID = FA86E9F91F46D4A3006D729A;
+					};
+					FA86EA171F46D4A3006D729A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+						TestTargetID = FA86E9F91F46D4A3006D729A;
+					};
+				};
+			};
+			buildConfigurationList = FA86E9DE1F46D365006D729A /* Build configuration list for PBXProject "WPFImagePicker" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				"zh-Hans",
+				"zh-Hant",
+			);
+			mainGroup = FA86E9DA1F46D365006D729A;
+			productRefGroup = FA86E9E51F46D365006D729A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA86E9E31F46D365006D729A /* WPFImagePicker */,
+				FA86E9F91F46D4A3006D729A /* WPFImagePicker-Demo */,
+				FA86EA0C1F46D4A3006D729A /* WPFImagePicker-DemoTests */,
+				FA86EA171F46D4A3006D729A /* WPFImagePicker-DemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FA86E9E21F46D365006D729A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA86EA321F46D511006D729A /* Assets.xcassets in Resources */,
+				FA86EA3E1F46D518006D729A /* Info.plist in Resources */,
+				FA9406351F70F66400A29BE8 /* WPFImagePicker.bundle in Resources */,
+				FA86EA351F46D511006D729A /* Info.plist in Resources */,
+				FA86EA401F46D518006D729A /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86E9F81F46D4A3006D729A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAA4CCDD1F7BB93800CE340B /* Localizable.strings in Resources */,
+				FA9406361F70F66400A29BE8 /* WPFImagePicker.bundle in Resources */,
+				FA86EA461F46D6CA006D729A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA0B1F46D4A3006D729A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA161F46D4A3006D729A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA86E9DF1F46D365006D729A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA2158FB1F751CD10099C2A6 /* WPFIPGridVC.swift in Sources */,
+				FAA4D2501F4E890E006888F6 /* WPFIPListVC.swift in Sources */,
+				FA965D101F73B20900E9F96A /* WPFIPBaseVC.swift in Sources */,
+				FA2158F91F751C760099C2A6 /* WPFIPDeniedVC.swift in Sources */,
+				FA2158F71F7514100099C2A6 /* WPFImagePicker.swift in Sources */,
+				FAE3F6D01F4C255A00EA4204 /* WPFoundation.swift in Sources */,
+				FAA4D2521F4EA723006888F6 /* WPFIPManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86E9F61F46D4A3006D729A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FABEFDE71F4D68D50082222D /* ViewController.swift in Sources */,
+				FA86EA431F46D68F006D729A /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA091F46D4A3006D729A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86EA141F46D4A3006D729A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA86EA0F1F46D4A3006D729A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA86E9F91F46D4A3006D729A /* WPFImagePicker-Demo */;
+			targetProxy = FA86EA0E1F46D4A3006D729A /* PBXContainerItemProxy */;
+		};
+		FA86EA1A1F46D4A3006D729A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA86E9F91F46D4A3006D729A /* WPFImagePicker-Demo */;
+			targetProxy = FA86EA191F46D4A3006D729A /* PBXContainerItemProxy */;
+		};
+		FAF39F2F1F711AC50082B167 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA86E9E31F46D365006D729A /* WPFImagePicker */;
+			targetProxy = FAF39F2E1F711AC50082B167 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FAA4CCDF1F7BB93800CE340B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAA4CCDE1F7BB93800CE340B /* en */,
+				FAA4CCE51F7BB98D00CE340B /* zh-Hans */,
+				FAA4CCE61F7BBA0F00CE340B /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FA86E9EA1F46D365006D729A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		FA86E9EB1F46D365006D729A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		FA86E9ED1F46D365006D729A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RTCETB2ULQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alex.WPFImagePicker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		FA86E9EE1F46D365006D729A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = RTCETB2ULQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alex.WPFImagePicker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		FA86EA201F46D4A3006D729A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = RTCETB2ULQ;
+				INFOPLIST_FILE = "Demo/WPFImagePicker-Demo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		FA86EA211F46D4A3006D729A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = RTCETB2ULQ;
+				INFOPLIST_FILE = "Demo/WPFImagePicker-Demo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-Demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		FA86EA231F46D4A3006D729A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "Tests/WPFImagePicker-DemoTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-DemoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WPFImagePicker-Demo.app/WPFImagePicker-Demo";
+			};
+			name = Debug;
+		};
+		FA86EA241F46D4A3006D729A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "Tests/WPFImagePicker-DemoTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-DemoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WPFImagePicker-Demo.app/WPFImagePicker-Demo";
+			};
+			name = Release;
+		};
+		FA86EA261F46D4A3006D729A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				INFOPLIST_FILE = "Tests/WPFImagePicker-DemoUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-DemoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "WPFImagePicker-Demo";
+			};
+			name = Debug;
+		};
+		FA86EA271F46D4A3006D729A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				INFOPLIST_FILE = "Tests/WPFImagePicker-DemoUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alex.WPFImagePicker-DemoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "WPFImagePicker-Demo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA86E9DE1F46D365006D729A /* Build configuration list for PBXProject "WPFImagePicker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86E9EA1F46D365006D729A /* Debug */,
+				FA86E9EB1F46D365006D729A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86E9EC1F46D365006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86E9ED1F46D365006D729A /* Debug */,
+				FA86E9EE1F46D365006D729A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86EA1F1F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86EA201F46D4A3006D729A /* Debug */,
+				FA86EA211F46D4A3006D729A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86EA221F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-DemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86EA231F46D4A3006D729A /* Debug */,
+				FA86EA241F46D4A3006D729A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86EA251F46D4A3006D729A /* Build configuration list for PBXNativeTarget "WPFImagePicker-DemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86EA261F46D4A3006D729A /* Debug */,
+				FA86EA271F46D4A3006D729A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA86E9DB1F46D365006D729A /* Project object */;
+}
