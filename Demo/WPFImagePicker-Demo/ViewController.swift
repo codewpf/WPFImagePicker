@@ -26,16 +26,24 @@ class ViewController: UIViewController {
         
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
+    }
 
     
     func btnClick() {
-        let imagePicker = WPFImagePicker(withPresenting: self)
-        imagePicker.start()
+        WPFImagePicker.imagePicker.start(withPresenting: self)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
     }
 
 

@@ -24,19 +24,25 @@ public class WPFIPListVC: WPFIPBaseVC {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        // title
+        self.navigationItem.title = Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle)
         
-        self.navigationItem.title = Bundle.localizeString(forkey: WPFIPConstants.keys.ImagePickerListVCTitle)
-        
-        self.tableView.frame = self.contentRect()
+        // cancel barbtn
+        let cancle = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelButtionClick))
+        self.navigationItem.setRightBarButton(cancle, animated: false)
+
+        // table view
+        self.tableView.frame = self.view.bounds
+        self.tableView.contentInset = UIEdgeInsets(top: self.contentInsetTop(), left: 0, bottom: 0, right: 0)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.view.addSubview(self.tableView)
         
-        let cancle = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelButtionClick))
-        self.navigationItem.setRightBarButton(cancle, animated: false)
-        
+        // data source
         self.dataSources = WPFIPManager.manager.fetchAssetCollection()
         self.tableView.reloadData()
+        
+        
         
     }
     
@@ -69,12 +75,11 @@ extension WPFIPListVC: UITableViewDelegate, UITableViewDataSource {
         }
         let collection = self.dataSources[indexPath.row]
         cell?.setValue(collection)
-        cell?.setCellHeight(self.cellHeight)
+        cell?.setCellHeight(WPFImagePicker.imagePicker.ipListCellHeight)
         return cell!
     }
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        assert(self.cellHeight != 0, "Please init self.cellHeight")
-        return self.cellHeight
+        return WPFImagePicker.imagePicker.ipListCellHeight
     }
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -114,11 +119,11 @@ class WPFIPListCell: UITableViewCell {
         
         let assets = PHAsset.fetchAssets(in: collection, options: nil)
         if assets.count > 0 {
-            PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height*3, height: self.height*3), contentMode: .default, options: nil) { (image, _) in
+            PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height, height: self.height), contentMode: .default, options: nil) { (image, _) in
                 self.ipImageView.image = image
             }
         } else {
-            self.ipImageView.image = UIImage()
+            self.ipImageView.image = UIImage(named: "image_default", in: Bundle.wpf(), compatibleWith: nil)
         }
         
         self.titleLabel.text = collection.localizedTitle

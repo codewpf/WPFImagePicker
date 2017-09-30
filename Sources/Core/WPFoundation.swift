@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Accelerate
 
 /// 自定义输出
 public func WPFLog<T>(_ message: T, fileName: String = #file, methodName: String =  #function, lineNumber: Int = #line)
@@ -243,6 +244,87 @@ public extension UIImage {
         UIGraphicsEndImageContext()
         return newImage
     }
+    
+    func coreBlurImage(withBlur blur: CGFloat) -> UIImage {
+        
+        let context = CIContext(options: nil)
+        let inputImage = CIImage(image: self)
+        guard let filter = CIFilter(name: "CIGaussianBlur") else {
+            return self
+        }
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(blur, forKey: "inputRadius")
+        
+        guard let outputCIImage = filter.outputImage else {
+            return self
+        }
+        
+        let rect = CGRect(origin: CGPoint.zero, size: self.size)
+        guard let cgimage = context.createCGImage(outputCIImage, from: rect) else {
+            return self
+        }
+        
+        let result = UIImage(cgImage: cgimage)
+        
+        return result
+    }
+    
+    func boxBlurImage(withBlur tempBlur: CGFloat) -> UIImage {
+        var blur = tempBlur
+        if blur < 0.0 || blur > 1.0 {
+            blur = 0.5
+        }
+        var boxSize = Int(blur * 40)
+        boxSize = boxSize - (boxSize % 2) + 1
+        guard let img = self.cgImage else {
+            return self
+        }
+        
+        var inBuffer = vImage_Buffer()
+        var outBuffer = vImage_Buffer()
+        var error: vImage_Error!
+        var pixelBuffer: UnsafeMutableRawPointer
+        
+        // 从CGImage中获取数据
+        guard let inProvider = img.dataProvider else {
+            return self
+        }
+        
+        let inBitmapData = inProvider.data
+        
+        // 设置从CGImage获取对象的属性
+        inBuffer.width = UInt(img.width)
+        inBuffer.height = UInt(img.height)
+        inBuffer.rowBytes = img.bytesPerRow
+        inBuffer.data = UnsafeMutableRawPointer(mutating: CFDataGetBytePtr(inBitmapData))
+        pixelBuffer = malloc(img.bytesPerRow * img.height)
+        
+        outBuffer.data = pixelBuffer
+        outBuffer.width = UInt(img.width)
+        outBuffer.height = UInt(img.height)
+        outBuffer.rowBytes = img.bytesPerRow
+        
+        error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, nil, 0, 0, UInt32(boxSize), UInt32(boxSize), nil, UInt32(kvImageEdgeExtend))
+        if error != nil && error != 0 {
+            NSLog("error from convolution %ld", error)
+        }
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let ctx = CGContext(data: outBuffer.data, width: Int(outBuffer.width), height: Int(outBuffer.height), bitsPerComponent: 8, bytesPerRow: outBuffer.rowBytes, space: colorSpace, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {
+            return self
+        }
+        
+        guard let imageRef = ctx.makeImage() else {
+            return self
+        }
+        let blurImage = UIImage(cgImage: imageRef)
+        
+        free(pixelBuffer)
+        
+        return blurImage
+    }
+    
+    
 }
 
 //MARK: -

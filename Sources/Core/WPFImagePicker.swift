@@ -9,25 +9,30 @@
 import UIKit
 import Photos
 
+typealias WPFIPVoidBlock = () -> Void
 
 public class WPFImagePicker: NSObject {
+    
+    public static let imagePicker: WPFImagePicker = WPFImagePicker()
 
     /// The list view controller cell height
     public var ipListCellHeight: CGFloat = 57
+    /// The max of the selecteds
+    public var ipMaxSeleted: Int = 9
     
     /// The view controller that presented this view controller
-    fileprivate var privatePresentingVC: UIViewController
-    public var presentingVC: UIViewController {
+    fileprivate var privatePresentingVC: UIViewController?
+    public var presentingVC: UIViewController? {
         get {
             return self.privatePresentingVC
         }
     }
-    public init(withPresenting presenting: UIViewController) {
-        privatePresentingVC = presenting
+    public override init() {
         super.init()
     }
     
-    public func start() {
+    public func start(withPresenting presenting: UIViewController) {
+        self.privatePresentingVC = presenting
         self.verifyPhotosAuthorizationStatus()
     }
     
@@ -58,7 +63,6 @@ extension WPFImagePicker {
     /// authorization have authorized
     func authorizationAuthorized() {
         let list = WPFIPListVC()
-        list.cellHeight = self.ipListCellHeight
         let nav = UINavigationController(rootViewController: list)
         
         if let collection = WPFIPManager.manager.fetchUserLibrary() {
@@ -68,7 +72,7 @@ extension WPFImagePicker {
             nav.pushViewController(grid, animated: false)
         }
         
-        self.privatePresentingVC.showDetailViewController(nav, sender: nav)
+        self.privatePresentingVC!.showDetailViewController(nav, sender: nav)
     }
     /// authorization have denied
     func authorizationDenied() {
@@ -76,7 +80,7 @@ extension WPFImagePicker {
         let denied = WPFIPDeniedVC()
         let nav = UINavigationController(rootViewController: denied)
         
-        self.privatePresentingVC.showDetailViewController(nav, sender: nil)
+        self.privatePresentingVC!.showDetailViewController(nav, sender: nil)
         
     }
 
@@ -88,7 +92,16 @@ extension WPFImagePicker {
 struct WPFIPConstants {
     struct ConstantKeys {
         let imagePickerDeniedText  = "WPFImagePickerAuthorizationDeniedText"
-        let ImagePickerListVCTitle = "WPFImagePickerListVCTitle"
+        
+        let imagePickerListVCTitle = "WPFImagePickerListVCTitle"
+        
+        let imagePickerGridVCPreviewBbiTitle = "WPFImagePickerGridVCPreviewBbiTitle"
+        let imagePickerGridVCFullImageBbiTitle = "WPFImagePickerGridVCFullImageBbiTitle"
+        let imagePickerGridVCSendBbiTitle = "WPFImagePickerGridVCSendBbiTitle"
+        let imagePickerGridVCEditBbiTitle = "WPFImagePickerGridVCEditBbiTitle"
+
+        let imagePickerMAXSlectedAlertMessage = "WPFImagePickerMAXSlectedAlertMessage"
+        let imagePickerMAXSlectedAlertBtnTitle = "WPFImagePickerMAXSlectedAlertBtnTitle"
     }
     static let keys: ConstantKeys = ConstantKeys()
 }
