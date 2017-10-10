@@ -137,7 +137,7 @@ extension WPFIPGridVC {
         for (idx, value) in self.selectedCell.enumerated() {
             let indexPath = IndexPath(item: value, section: 0)
             if let cell = self.collectionView.cellForItem(at: indexPath) as? WPFIPGridCell {
-                cell.updateBtn(idx+1, true)
+                cell.updateBtn(selectIndex: idx+1, newState: true, false)
             }
         }
     }
@@ -167,31 +167,30 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
             fatalError("unexpected cell in collection view")
         }
         
-        var canClick = false
-        canClick = self.selectedCell.count < 9
-        if self.selectedCell.contains(indexPath.row) {
-            canClick = true
-        }
+        cell.renewCell()
         
-        cell.setValue(self.assets.object(at: indexPath.row), indexPath.row, canClick)
+        cell.setValue(self.assets.object(at: indexPath.row), indexPath.row, self.canClick(indexPath.row))
+        
         cell.selectBlock = { [weak self] (cell, isSelected) in
             self?.cellSelectBtnClick(cell, isSelected)
         }
         cell.tapBlock = { _ in
             print("跳转预览")
         }
+        
+        if let idx = self.selectedCell.index(of: indexPath.row) {
+            cell.updateBtn(selectIndex: idx+1, newState: true, false)
+        }
+        
         return cell
     }
     
-    /// Cell 被点击
-    ///
-    /// - Parameters:
-    ///   - cell: current itm.
-    ///   - isSelected: new state.
+    // 被 WPFIPGridCellSelectBlock 调用
+    // isSelected: 当前状态
     func cellSelectBtnClick(_ cell: WPFIPGridCell, _ isSelected: Bool) {
-        // 被取消
-        if isSelected == false {
-            cell.updateBtn(0, isSelected)
+        // 如果之前是被选中的状态 则修改为取消选中
+        if isSelected == true {
+            cell.updateBtn(selectIndex: 0, newState: !isSelected)
             
             self.selectedCell.remove(object: cell.row)
         } else {
@@ -200,10 +199,11 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
                 self.showMaximumAlert()
                 return
             }
+            cell.updateBtn(selectIndex: self.selectedCell.count, newState: !isSelected, true)
+
 
             // 添加进数组
             self.selectedCell.append(cell.row)
-
         }
         
         if self.selectedCell.count > 0 {
@@ -226,16 +226,32 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
         // 两个临界点 刷新Collection item coverView 的状态
         if self.selectedCell.count == WPFImagePicker.imagePicker.ipMaxSeleted ||
             self.selectedCell.count == WPFImagePicker.imagePicker.ipMaxSeleted - 1 {
-            self.collectionView.reloadData()
+            for cell in self.collectionView.visibleCells {
+                if let grid = cell as? WPFIPGridCell {
+                    grid.updateCoverState(self.canClick(grid.row))
+                }
+            }
         }
-        
         
         
     }
     
+    func canClick(_ row: Int) -> Bool {
+        var state = false
+        state = self.selectedCell.count < 9
+        if self.selectedCell.contains(row) {
+            state = true
+        }
+        return state
+    }
+    
 }
 
-
+/// 选择按钮 被点击
+///
+/// - Parameters:
+///   - griCell: current item.
+///   - isSelected: now state.
 typealias WPFIPGridCellSelectBlock = (_ griCell: WPFIPGridCell, _ isSelected: Bool) -> Void
 
 class WPFIPGridCell: UICollectionViewCell {
@@ -274,6 +290,7 @@ class WPFIPGridCell: UICollectionViewCell {
         
         selectBtn.frame = CGRect(x: imageView.width-27, y: 0, width: 27, height: 27)
         selectBtn.setBackgroundImage(UIImage(named: "btn_image_normal", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
+        selectBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         selectBtn.setTitle("", for: .normal)
         selectBtn.setBackgroundImage(UIImage(named: "btn_image_selected", in: Bundle.wpf(), compatibleWith: nil), for: .selected)
         selectBtn.addTarget(self, action: #selector(self.selectBtnClick(_:)), for: .touchUpInside)
@@ -282,9 +299,19 @@ class WPFIPGridCell: UICollectionViewCell {
         
     }
     
+    func renewCell() {
+//        imageView.image = nil
+        selectBtn.isSelected = false
+        coverView.isHidden = true
+    }
+    
+    
+    //
     func setValue(_ asset: PHAsset, _ row: Int, _ canClick: Bool) {
+        WPFLog("row = \(row) start")
         let width = ((UIScreen.screenW - kGridGap * (kGridLines + 1)) / kGridLines ) * 3
         PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: width, height: width), contentMode: .default, options: nil) { (image, _) in
+            WPFLog("row = \(row) end ")
             self.imageView.image = image
         }
         
@@ -293,33 +320,38 @@ class WPFIPGridCell: UICollectionViewCell {
         self.coverView.isHidden = canClick
     }
     
+    // 修改白色覆盖状态
+    func updateCoverState(_ canClick: Bool) {
+        self.coverView.isHidden = canClick
+    }
+    
+    // 修改选择按钮状态
+    func updateBtn(selectIndex index: Int, newState isSelected: Bool, _ animate: Bool = true) {
+        self.selectBtn.setTitle("\(index)", for: .selected)
+        
+        if isSelected == true && animate == true {
+            let keyframe = CAKeyframeAnimation(keyPath: "transform.scale")
+            keyframe.duration = 0.4
+            keyframe.keyTimes = [0, 0.33, 0.66, 1]
+            keyframe.values = [0.75, 1.08, 0.92, 1]
+            self.selectBtn.layer.add(keyframe, forKey: "select_btn_transform")
+        }
+        
+        self.selectBtn.isSelected = isSelected
+    }
+
+    
+    
+    // 选择 点击
     func selectBtnClick(_ btn: UIButton) {
         guard let block = self.selectBlock else {
             fatalError("the cell does not have the block of select action")
         }
-        block(self, !btn.isSelected)
-        
-        if btn.isSelected == false {
-            
-            let keyframe = CAKeyframeAnimation(keyPath: "transform.scale")
-            keyframe.duration = 0.3
-            keyframe.keyTimes = [0, 0.33, 0.66, 1]
-            keyframe.values = [0.75, 1.08, 0.92, 1]
-            self.selectBtn.layer.add(keyframe, forKey: "select_btn_transform")
-            
-        }
-
+        block(self, btn.isSelected)
     }
     
-    //
-    func updateBtn(_ index: Int, _ isSelected: Bool) {
-        self.selectBtn.setTitle("\(index)", for: .selected)
-        
-        self.selectBtn.isSelected = isSelected
-
-        
-    }
     
+    // 预览 点击
     func tapClick() {
         guard let block = self.tapBlock else {
             fatalError("the cell does not have the block of tap")

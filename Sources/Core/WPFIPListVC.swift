@@ -105,7 +105,6 @@ class WPFIPListCell: UITableViewCell {
         countLabel = UILabel()
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.ipImageView.contentMode = .scaleAspectFill
         self.ipImageView.clipsToBounds = true
         self.countLabel.textColor = UIColor.lightGray
         
@@ -119,10 +118,14 @@ class WPFIPListCell: UITableViewCell {
         
         let assets = PHAsset.fetchAssets(in: collection, options: nil)
         if assets.count > 0 {
-            PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height, height: self.height), contentMode: .default, options: nil) { (image, _) in
+            self.ipImageView.contentMode = .scaleAspectFill
+
+            PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height*2, height: self.height*2), contentMode: .default, options: nil) { (image, _) in
                 self.ipImageView.image = image
             }
         } else {
+            self.ipImageView.contentMode = .scaleAspectFit
+
             self.ipImageView.image = UIImage(named: "image_default", in: Bundle.wpf(), compatibleWith: nil)
         }
         
