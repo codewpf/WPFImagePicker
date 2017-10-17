@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0AB61F1F8E04BF00CED4CE /* WPFIPPreviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0AB61E1F8E04BF00CED4CE /* WPFIPPreviewVC.swift */; };
 		FA2158F71F7514100099C2A6 /* WPFImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */; };
 		FA2158F91F751C760099C2A6 /* WPFIPDeniedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */; };
 		FA2158FB1F751CD10099C2A6 /* WPFIPGridVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */; };
@@ -68,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA0AB61E1F8E04BF00CED4CE /* WPFIPPreviewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPPreviewVC.swift; sourceTree = "<group>"; };
 		FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFImagePicker.swift; sourceTree = "<group>"; };
 		FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPDeniedVC.swift; sourceTree = "<group>"; };
 		FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPGridVC.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			children = (
 				FAA4D24F1F4E890E006888F6 /* WPFIPListVC.swift */,
 				FA2158FA1F751CD10099C2A6 /* WPFIPGridVC.swift */,
+				FA0AB61E1F8E04BF00CED4CE /* WPFIPPreviewVC.swift */,
 				FA2158F81F751C760099C2A6 /* WPFIPDeniedVC.swift */,
 				FA965D0F1F73B20900E9F96A /* WPFIPBaseVC.swift */,
 				FAA4D2511F4EA723006888F6 /* WPFIPManager.swift */,
@@ -411,6 +414,7 @@
 				FAA4D2501F4E890E006888F6 /* WPFIPListVC.swift in Sources */,
 				FA965D101F73B20900E9F96A /* WPFIPBaseVC.swift in Sources */,
 				FA2158F91F751C760099C2A6 /* WPFIPDeniedVC.swift in Sources */,
+				FA0AB61F1F8E04BF00CED4CE /* WPFIPPreviewVC.swift in Sources */,
 				FA2158F71F7514100099C2A6 /* WPFImagePicker.swift in Sources */,
 				FAE3F6D01F4C255A00EA4204 /* WPFoundation.swift in Sources */,
 				FAA4D2521F4EA723006888F6 /* WPFIPManager.swift in Sources */,

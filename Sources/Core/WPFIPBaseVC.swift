@@ -18,31 +18,36 @@ public class WPFIPBaseVC: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+                
+        self.navSetting(self.navigationController?.navigationBar)
         
-        self.navSetting()
         self.systemSetting()
         
         PHPhotoLibrary.shared().register(self)
+
 
     }
     
     deinit {
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
     }
+    
 }
+
 
 //MARK: - Setting
 extension WPFIPBaseVC {
-    func navSetting() {
+    func navSetting(_ nav: UINavigationBar?) {
         
         let image = UIImage(named: "nav_bg", in: Bundle.wpf(), compatibleWith: nil)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
-        self.navigationController?.navigationBar.tintColor = UIColor.white
-        self.navigationController?.navigationBar.setBackgroundImage(image, for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.barStyle = .black
-
+        nav?.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+        nav?.tintColor = UIColor.white
+        nav?.setBackgroundImage(image, for: .default)
+        nav?.shadowImage = UIImage()
+        nav?.barStyle = .black
+        
     }
+
     
     func systemSetting() {
         if #available(iOS 11.0, *) {
@@ -64,6 +69,10 @@ extension WPFIPBaseVC {
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    public override var prefersStatusBarHidden: Bool {
+        return false
+    }
+
 }
 
 //MARK: - Subclass methods
@@ -80,5 +89,34 @@ extension WPFIPBaseVC: PHPhotoLibraryChangeObserver {
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
     }
 }
+
+/*
+//MARK: - NavigationController
+extension WPFIPBaseVC: UINavigationControllerDelegate {
+    
+    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return nil
+    }
+    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return nil
+    }
+    
+    
+    
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

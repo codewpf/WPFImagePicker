@@ -8,9 +8,11 @@
 
 import UIKit
 import Photos
+import ObjectiveC
 
 typealias WPFIPVoidBlock = () -> Void
 
+//MARK: -
 public class WPFImagePicker: NSObject {
     
     public static let imagePicker: WPFImagePicker = WPFImagePicker()
@@ -87,8 +89,7 @@ extension WPFImagePicker {
 }
 
 
-
-
+//MARK: -
 struct WPFIPConstants {
     struct ConstantKeys {
         let imagePickerDeniedText  = "WPFImagePickerAuthorizationDeniedText"
@@ -106,6 +107,7 @@ struct WPFIPConstants {
     static let keys: ConstantKeys = ConstantKeys()
 }
 
+//MARK: -
 extension Bundle {
     class func wpf() -> Bundle? {
         guard let path = Bundle.main.path(forResource: "WPFImagePicker", ofType: "bundle"),
@@ -142,5 +144,109 @@ extension Bundle {
         return bundle.localizedString(forKey: key, value: nil, table: nil)
     }
 }
+
+public extension DispatchQueue {
+    private static var onceTracker = [String]()
+    
+    public class func once(token: String, block:()->Void) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        
+        if onceTracker.contains(token) {
+            return
+        }
+        
+        onceTracker.append(token)
+        block()
+    }
+}
+
+extension NSObject {
+    
+    class func swapMethod(originSel: Selector, swapSel: Selector) {
+        let originMet: Method = class_getInstanceMethod(self, originSel)
+        let swapMet: Method = class_getInstanceMethod(self, swapSel)
+        
+        let added = class_addMethod(self, originSel, method_getImplementation(swapMet), method_getTypeEncoding(swapMet))
+        if added == true {
+            class_replaceMethod(self, swapSel, method_getImplementation(originMet), method_getTypeEncoding(originMet))
+        } else {
+            method_exchangeImplementations(originMet, swapMet)
+        }
+    }
+
+}
+
+extension UIView {
+    open static func initializeOneMethod()  {
+        DispatchQueue.once(token: "com.alex.WPFImagePicker") {
+            self.swapMethod(originSel: #selector(layoutSubviews), swapSel: #selector(wpfipLayoutSubview))
+        }
+        
+    }
+    
+    func wpfipLayoutSubview() {
+        
+        if let selfClazz = NSClassFromString("_UIModernBarButton"),
+            self.isKind(of: selfClazz),
+            let supView = self.superview,
+            let supClazz = NSClassFromString("_UIBackButtonContainerView"),
+            supView.isKind(of: supClazz) {
+            let btn: UIButton = self as! UIButton
+            if btn.titleLabel?.text == Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle) {
+                for _ in 0 ..< 10  {
+                    btn.setTitle("返回", for: UIControlState.init(rawValue: 0))
+                    print(btn.titleLabel?.text ?? "")
+                    btn.setTitle("返回", for: .highlighted)
+                    print(btn.titleLabel?.text ?? "")
+                }
+
+            }
+        }
+        self.wpfipLayoutSubview()
+    }
+    
+    func getMethodList() -> [String] {
+        var count: UInt32 = 0
+        guard let methodList = class_copyMethodList(type(of: self), &count) else {
+            return []
+        }
+        var mutabList: [String] = []
+        for i in 0 ..< count {
+            let method = methodList[Int(i)]
+            if let sel = method_getName(method) {
+                mutabList.append(NSStringFromSelector(sel))
+            }
+        }
+        return mutabList
+    }
+    
+    func getPropertyList() -> [String] {
+        var count: UInt32 = 0
+        guard let propertyList = class_copyPropertyList(type(of: self), &count) else {
+            return []
+        }
+        var mutabList: [String] = []
+        for i in 0 ..< count {
+            if let name = property_getName(propertyList[Int(i)]),
+                let nstr = NSString.init(utf8String: name) {
+                mutabList.append("\(nstr)")
+            }
+        }
+        return mutabList
+    }
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
 
 

@@ -14,11 +14,11 @@ fileprivate let kGridLines: CGFloat = 4
 fileprivate let kToolBarHeight: CGFloat = 45
 
 class WPFIPGridVC: WPFIPBaseVC {
+ 
+    var isStatusBarHidden: Bool = false
     
     /// 已经被选中的Cell
     var selectedCell: [Int] = []
-    /// 预览按钮
-    
     
     // Collection View
     let cellIdentifier = "wpf_ip_grid_vc_cell"
@@ -41,7 +41,7 @@ class WPFIPGridVC: WPFIPBaseVC {
         tb.barTintColor = UIColor(r: 38, g: 45, b: 51)
         tb.isTranslucent = false
         tb.barStyle = .black
-
+        
         return tb
     }()
     
@@ -57,27 +57,25 @@ class WPFIPGridVC: WPFIPBaseVC {
         self.privateAssets = assets
         super.init(nibName: nil, bundle: nil)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if self.assets.count > 1 {
-            self.collectionView.scrollToItem(at: IndexPath(item: self.assets.count-1, section: 0), at: .bottom, animated: false)
-        }
-    }
+
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
         
         // cancel bar btn
-        let cancle = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelButtionClick))
-        self.navigationItem.setRightBarButton(cancle, animated: false)
-
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelButtonClick))
+        self.navigationItem.setRightBarButton(cancel, animated: false)
+        
         // collectionview
-        self.collectionView.frame = CGRect(x: 0, y: 0, width: UIScreen.screenW, height: UIScreen.screenH)
-        self.collectionView.contentInset = UIEdgeInsets(top: self.contentInsetTop(), left: 0, bottom:  kToolBarHeight, right: 0)
+        self.collectionView.frame = CGRect(x: 0, y: 0, width: UIScreen.screenW, height: UIScreen.screenH-kToolBarHeight)
+        self.collectionView.contentInset = UIEdgeInsets(top: self.contentInsetTop(), left: 0, bottom:  0, right: 0)
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset
         self.collectionView.backgroundColor = UIColor.white
         self.collectionView.register(WPFIPGridCell.self, forCellWithReuseIdentifier: self.cellIdentifier)
+        if #available(iOS 11.0, *) {
+            // safeAreaInsets
+            self.collectionView.contentInsetAdjustmentBehavior = .always
+        }
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.view.addSubview(self.collectionView)
@@ -85,9 +83,24 @@ class WPFIPGridVC: WPFIPBaseVC {
         // toolbar
         self.initToolBar()
         
+        
     }
     
+    
+    var initScroll: Int = 0
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if self.initScroll == 0 {
+            if self.assets.count > 1 {
+                self.collectionView.scrollToItem(at: IndexPath(item: self.assets.count-1, section: 0), at: .bottom, animated: false)
+            }
+        }
+        self.initScroll = 1
+        
+    }
 
+    
     fileprivate let previewBtn = UIButton(type: .custom)
     fileprivate let fullImageBtn = UIButton(type: .custom)
     fileprivate let sendBtn = UIButton(type: .custom)
@@ -122,9 +135,8 @@ class WPFIPGridVC: WPFIPBaseVC {
         self.toolBar.items = items
         self.toolBar.frame = CGRect(x: 0, y: UIScreen.screenH-kToolBarHeight, width: UIScreen.screenW, height: kToolBarHeight)
         self.view.addSubview(self.toolBar)
-
+        
     }
-    
     
     
     required init?(coder aDecoder: NSCoder) {
@@ -132,7 +144,16 @@ class WPFIPGridVC: WPFIPBaseVC {
     }
 }
 
+//MARK: - PrivateMedhod
 extension WPFIPGridVC {
+
+    /*
+     _UINavigationBarContentView
+     _UIButtonBarButton
+     _UIBackButtonContainerView
+     _UIModernBarButton
+     */
+    
     func updateSelectedItem() {
         for (idx, value) in self.selectedCell.enumerated() {
             let indexPath = IndexPath(item: value, section: 0)
@@ -142,22 +163,45 @@ extension WPFIPGridVC {
         }
     }
     
-    func cancelButtionClick() {
+    func cancelButtonClick() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
     
     func previewBtnClick() {
         
+        self.updateNavAndStatus(true)
+        
+        let vc = WPFIPPreviewVC()
+        vc.backBlock = { [weak self] in
+            self?.updateNavAndStatus(false)
+        }
+        self.navigationController?.pushViewController(vc, animated: true)
+        
     }
+    
     func fullImageBtnClick(_ btn: UIButton) {
         btn.isSelected = !btn.isSelected
     }
+    
     func sendBtnClick() {
         
     }
+    
+    func updateNavAndStatus(_ state: Bool) {
+        self.isStatusBarHidden = state
+        self.setNeedsStatusBarAppearanceUpdate()
+        self.navigationController?.setNavigationBarHidden(state, animated: true)
+    }
+    
+    public override var prefersStatusBarHidden: Bool {
+        return self.isStatusBarHidden
+    }
+
+    
 }
 
 
+//MARK: - CollectionView Delegate & DataSource
 extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.assets.count
@@ -174,8 +218,8 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.selectBlock = { [weak self] (cell, isSelected) in
             self?.cellSelectBtnClick(cell, isSelected)
         }
-        cell.tapBlock = { _ in
-            print("跳转预览")
+        cell.tapBlock = { [weak self] in
+            self?.previewBtnClick()
         }
         
         if let idx = self.selectedCell.index(of: indexPath.row) {
@@ -200,8 +244,8 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
                 return
             }
             cell.updateBtn(selectIndex: self.selectedCell.count, newState: !isSelected, true)
-
-
+            
+            
             // 添加进数组
             self.selectedCell.append(cell.row)
         }
@@ -217,11 +261,11 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
             self.sendBtn.isEnabled = false
             self.sendBtn.setTitle(Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerGridVCSendBbiTitle), for: .normal)
         }
-
+        
         
         self.updateSelectedItem()
-
-
+        
+        
         
         // 两个临界点 刷新Collection item coverView 的状态
         if self.selectedCell.count == WPFImagePicker.imagePicker.ipMaxSeleted ||
@@ -247,6 +291,8 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
 }
 
+
+//MARK: - WPFIPGridCell
 /// 选择按钮 被点击
 ///
 /// - Parameters:
@@ -269,7 +315,7 @@ class WPFIPGridCell: UICollectionViewCell {
     let coverView: UIView
     
     let selectBtn: UIButton
-
+    
     override init(frame: CGRect) {
         imageView = UIImageView()
         coverView = UIView()
@@ -295,12 +341,12 @@ class WPFIPGridCell: UICollectionViewCell {
         selectBtn.setBackgroundImage(UIImage(named: "btn_image_selected", in: Bundle.wpf(), compatibleWith: nil), for: .selected)
         selectBtn.addTarget(self, action: #selector(self.selectBtnClick(_:)), for: .touchUpInside)
         self.contentView.addSubview(selectBtn)
-
+        
         
     }
     
     func renewCell() {
-//        imageView.image = nil
+        //        imageView.image = nil
         selectBtn.isSelected = false
         coverView.isHidden = true
     }
@@ -308,10 +354,10 @@ class WPFIPGridCell: UICollectionViewCell {
     
     //
     func setValue(_ asset: PHAsset, _ row: Int, _ canClick: Bool) {
-        WPFLog("row = \(row) start")
+        //        WPFLog("row = \(row) start")
         let width = ((UIScreen.screenW - kGridGap * (kGridLines + 1)) / kGridLines ) * 3
         PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: width, height: width), contentMode: .default, options: nil) { (image, _) in
-            WPFLog("row = \(row) end ")
+            //            WPFLog("row = \(row) end ")
             self.imageView.image = image
         }
         
@@ -339,7 +385,7 @@ class WPFIPGridCell: UICollectionViewCell {
         
         self.selectBtn.isSelected = isSelected
     }
-
+    
     
     
     // 选择 点击
