@@ -25,7 +25,6 @@ public class WPFIPBaseVC: UIViewController {
         
         PHPhotoLibrary.shared().register(self)
 
-
     }
     
     deinit {
@@ -39,10 +38,11 @@ public class WPFIPBaseVC: UIViewController {
 extension WPFIPBaseVC {
     func navSetting(_ nav: UINavigationBar?) {
         
-        let image = UIImage(named: "nav_bg", in: Bundle.wpf(), compatibleWith: nil)
+        let height = UIApplication.shared.statusBarFrame.height + nav!.height
+        let image2 = UIImage.image(withColor: UIColor(r: 43, g: 47, b: 51, a: 94), CGRect(x: 0, y: 0, width: 2, height: height))
         nav?.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         nav?.tintColor = UIColor.white
-        nav?.setBackgroundImage(image, for: .default)
+        nav?.setBackgroundImage(image2, for: .default)
         nav?.shadowImage = UIImage()
         nav?.barStyle = .black
         
@@ -57,14 +57,23 @@ extension WPFIPBaseVC {
         }
     }
     
-    func contentInsetTop() -> CGFloat {
-        if #available(iOS 11.0, *) {
+    func contentInsetTop(_ calculate: Bool = true) -> CGFloat {
+        if #available(iOS 11.0, *) , calculate == true {
             let edge = self.view.safeAreaInsets
             return edge.top
         } else {
             return (self.navigationController?.navigationBar.height ?? 44) + UIApplication.shared.statusBarFrame.height
         }
     }
+    func contentInsetBottom(_ calculate: Bool = true) -> CGFloat {
+        if #available(iOS 11.0, *) , calculate == true {
+            let edge = self.view.safeAreaInsets
+            return edge.bottom
+        } else {
+            return 0
+        }
+    }
+    
  
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent

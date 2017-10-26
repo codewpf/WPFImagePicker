@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         btn.addTarget(self, action: #selector(self.btnClick), for: .touchUpInside)
         self.view.addSubview(btn)
         
-        
+//        self.saveImage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +45,35 @@ class ViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
+    
+    func saveImage() {
+        for _ in 0 ..< 100 {
+            let color: UIColor = UIColor(r: CGFloat(Int(arc4random())%255), g: CGFloat(Int(arc4random())%255), b: CGFloat(Int(arc4random())%255))
+            let image: UIImage = UIImage.image(withColor: color)
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.doneSave(image:didFinishSavingWithError:contextInfo:)), nil)
+        }
+    }
 
+    var tempa = 0
+    var tempb = 0
+    func doneSave(image: UIImage, didFinishSavingWithError error: Error?, contextInfo: AnyObject?) {
+        
+        if error != nil {
+            print("done --- \(tempa)")
+            
+            tempa = tempa + 1
+
+        } else {
+            print("done +++++++ \(tempb)")
+            
+            tempa = tempb + 1
+
+        }
+        
+    }
+
+    
+    
 
 }
 

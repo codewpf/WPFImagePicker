@@ -33,7 +33,6 @@ public class WPFIPListVC: WPFIPBaseVC {
 
         // table view
         self.tableView.frame = self.view.bounds
-        self.tableView.contentInset = UIEdgeInsets(top: self.contentInsetTop(), left: 0, bottom: 0, right: 0)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.view.addSubview(self.tableView)

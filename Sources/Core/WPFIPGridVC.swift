@@ -11,11 +11,9 @@ import Photos
 
 fileprivate let kGridGap: CGFloat = 4
 fileprivate let kGridLines: CGFloat = 4
-fileprivate let kToolBarHeight: CGFloat = 45
+let kToolBarHeight: CGFloat = 45
 
 class WPFIPGridVC: WPFIPBaseVC {
- 
-    var isStatusBarHidden: Bool = false
     
     /// 已经被选中的Cell
     var selectedCell: [Int] = []
@@ -68,13 +66,12 @@ class WPFIPGridVC: WPFIPBaseVC {
         
         // collectionview
         self.collectionView.frame = CGRect(x: 0, y: 0, width: UIScreen.screenW, height: UIScreen.screenH-kToolBarHeight)
-        self.collectionView.contentInset = UIEdgeInsets(top: self.contentInsetTop(), left: 0, bottom:  0, right: 0)
+        self.collectionView.contentInset = UIEdgeInsets(top: self.contentInsetTop(false), left: 0, bottom:  0, right: 0)
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset
         self.collectionView.backgroundColor = UIColor.white
         self.collectionView.register(WPFIPGridCell.self, forCellWithReuseIdentifier: self.cellIdentifier)
         if #available(iOS 11.0, *) {
-            // safeAreaInsets
-            self.collectionView.contentInsetAdjustmentBehavior = .always
+            self.collectionView.contentInsetAdjustmentBehavior = .never
         }
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -133,7 +130,7 @@ class WPFIPGridVC: WPFIPBaseVC {
         let items = [previewBbi, spaceBbi, fullImageBbi, spaceBbi, sendBbi]
         
         self.toolBar.items = items
-        self.toolBar.frame = CGRect(x: 0, y: UIScreen.screenH-kToolBarHeight, width: UIScreen.screenW, height: kToolBarHeight)
+        self.toolBar.frame = CGRect(x: 0, y: UIScreen.screenH-kToolBarHeight-self.contentInsetBottom(), width: UIScreen.screenW, height: kToolBarHeight)
         self.view.addSubview(self.toolBar)
         
     }
@@ -142,17 +139,16 @@ class WPFIPGridVC: WPFIPBaseVC {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    var isStatusBarHidden: Bool = false
+    override var prefersStatusBarHidden: Bool {
+        return self.isStatusBarHidden
+    }
+    
 }
 
 //MARK: - PrivateMedhod
 extension WPFIPGridVC {
-
-    /*
-     _UINavigationBarContentView
-     _UIButtonBarButton
-     _UIBackButtonContainerView
-     _UIModernBarButton
-     */
     
     func updateSelectedItem() {
         for (idx, value) in self.selectedCell.enumerated() {
@@ -168,16 +164,41 @@ extension WPFIPGridVC {
     }
     
     func previewBtnClick() {
+        let prevc = WPFIPPreviewVC()
+        self.addChildViewController(prevc)
+        prevc.view.frame = CGRect(x: self.view.bounds.width, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+        self.view.addSubview(prevc.view)
+        prevc.didMove(toParentViewController: self)
         
-        self.updateNavAndStatus(true)
-        
-        let vc = WPFIPPreviewVC()
-        vc.backBlock = { [weak self] in
-            self?.updateNavAndStatus(false)
+        self.updateNavigation(isHidden: true, subvc: prevc)
+        prevc.backBlock = { [weak self] in
+            self?.updateNavigation(isHidden: false, subvc: prevc)
         }
-        self.navigationController?.pushViewController(vc, animated: true)
-        
     }
+    
+    func updateNavigation(isHidden state: Bool, subvc vc: WPFIPBaseVC) {
+        self.isStatusBarHidden = state
+        self.setNeedsStatusBarAppearanceUpdate()
+        self.navigationController?.setNavigationBarHidden(state, animated: false)
+        
+        var leading: CGFloat = 0
+        if state == false {
+            leading = self.view.bounds.width
+        }
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+            vc.view.leading = leading
+
+        }) { (_) in
+            if state == false {
+                vc.willMove(toParentViewController: nil)
+                vc.view.removeFromSuperview()
+                vc.removeFromParentViewController()
+            }
+
+        }
+    }
+    
+    
     
     func fullImageBtnClick(_ btn: UIButton) {
         btn.isSelected = !btn.isSelected
@@ -185,16 +206,6 @@ extension WPFIPGridVC {
     
     func sendBtnClick() {
         
-    }
-    
-    func updateNavAndStatus(_ state: Bool) {
-        self.isStatusBarHidden = state
-        self.setNeedsStatusBarAppearanceUpdate()
-        self.navigationController?.setNavigationBarHidden(state, animated: true)
-    }
-    
-    public override var prefersStatusBarHidden: Bool {
-        return self.isStatusBarHidden
     }
 
     

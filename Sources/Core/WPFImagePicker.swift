@@ -16,7 +16,7 @@ typealias WPFIPVoidBlock = () -> Void
 public class WPFImagePicker: NSObject {
     
     public static let imagePicker: WPFImagePicker = WPFImagePicker()
-
+    
     /// The list view controller cell height
     public var ipListCellHeight: CGFloat = 57
     /// The max of the selecteds
@@ -85,7 +85,7 @@ extension WPFImagePicker {
         self.privatePresentingVC!.showDetailViewController(nav, sender: nil)
         
     }
-
+    
 }
 
 
@@ -100,7 +100,8 @@ struct WPFIPConstants {
         let imagePickerGridVCFullImageBbiTitle = "WPFImagePickerGridVCFullImageBbiTitle"
         let imagePickerGridVCSendBbiTitle = "WPFImagePickerGridVCSendBbiTitle"
         let imagePickerGridVCEditBbiTitle = "WPFImagePickerGridVCEditBbiTitle"
-
+        let imagePickerGridVCBackBbiTitle = "WPFImagePickerGridVCBackBbiTitle"
+        
         let imagePickerMAXSlectedAlertMessage = "WPFImagePickerMAXSlectedAlertMessage"
         let imagePickerMAXSlectedAlertBtnTitle = "WPFImagePickerMAXSlectedAlertBtnTitle"
     }
@@ -120,7 +121,7 @@ extension Bundle {
     func localizeString(forkey key: String) -> String {
         return self.localizedString(forKey: key, value: nil, table: "Localizable")
     }
-
+    
     class func localizeString(forkey key: String) -> String {
         guard var language = NSLocale.preferredLanguages.first else {
             return "did not have except language "
@@ -138,8 +139,8 @@ extension Bundle {
         }
         
         guard let path = self.wpf()?.path(forResource: language, ofType: "lproj") ,
-               let bundle = Bundle(path: path) else {
-            return "did not have except lproj files"
+            let bundle = Bundle(path: path) else {
+                return "did not have except lproj files"
         }
         return bundle.localizedString(forKey: key, value: nil, table: nil)
     }
@@ -174,7 +175,7 @@ extension NSObject {
             method_exchangeImplementations(originMet, swapMet)
         }
     }
-
+    
 }
 
 extension UIView {
@@ -193,15 +194,14 @@ extension UIView {
             let supClazz = NSClassFromString("_UIBackButtonContainerView"),
             supView.isKind(of: supClazz) {
             let btn: UIButton = self as! UIButton
-            if btn.titleLabel?.text == Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle) {
-                for _ in 0 ..< 10  {
-                    btn.setTitle("返回", for: UIControlState.init(rawValue: 0))
-                    print(btn.titleLabel?.text ?? "")
-                    btn.setTitle("返回", for: .highlighted)
-                    print(btn.titleLabel?.text ?? "")
-                }
-
-            }
+//            if btn.titleLabel?.text == Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle) {
+            
+                let title = Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerGridVCBackBbiTitle)
+                btn.setTitle(title, for: UIControlState.init(rawValue: 0))
+                _ = btn.titleLabel?.text
+                btn.setTitle(title, for: .highlighted)
+                _ = btn.titleLabel?.text
+//            }
         }
         self.wpfipLayoutSubview()
     }
