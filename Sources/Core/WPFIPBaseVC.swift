@@ -11,6 +11,31 @@ import UIKit
 import Photos
 
 public class WPFIPBaseVC: UIViewController {
+    /// 工具栏高度
+    let kToolBarHeight: CGFloat = 45
+    
+    
+    
+    private let pTitle: UILabel = {
+        let title = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width/2, height: 44))
+        title.textColor = UIColor.white
+        title.font = UIFont.boldSystemFont(ofSize: 17)
+        title.textAlignment = .center
+        return title
+    }()
+    var wpfTitle: String? {
+        get {
+            return self.pTitle.text
+        }
+        set {
+            self.pTitle.text = newValue
+            self.pTitle.frame = CGRect(x: 0, y: 0, width: 200, height: self.navigationController?.navigationBar.frame.size.height ?? 44)
+            self.navigationItem.titleView = pTitle
+            
+        }
+    }
+    
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
@@ -36,20 +61,25 @@ public class WPFIPBaseVC: UIViewController {
 
 //MARK: - Setting
 extension WPFIPBaseVC {
+    
+    /// 导航设置
     func navSetting(_ nav: UINavigationBar?) {
-        
-        let height = UIApplication.shared.statusBarFrame.height + nav!.height
-        let image2 = UIImage.image(withColor: UIColor(r: 43, g: 47, b: 51, a: 94), CGRect(x: 0, y: 0, width: 2, height: height))
-        nav?.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
-        nav?.tintColor = UIColor.white
-        nav?.setBackgroundImage(image2, for: .default)
-        nav?.shadowImage = UIImage()
-        nav?.barStyle = .black
+        if let nnn = nav {
+            let height = UIApplication.shared.statusBarFrame.height + nnn.height
+            let image2 = UIImage.image(withColor: UIColor(r: 43, g: 47, b: 51, a: 94), CGRect(x: 0, y: 0, width: 2, height: height))
+            nnn.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+            nnn.tintColor = UIColor.white
+            nnn.setBackgroundImage(image2, for: .default)
+            nnn.shadowImage = UIImage()
+            nnn.barStyle = .black
+        }
         
     }
 
     
     func systemSetting() {
+        self.view.backgroundColor = UIColor.white
+        
         if #available(iOS 11.0, *) {
             
         } else {
@@ -65,12 +95,21 @@ extension WPFIPBaseVC {
             return (self.navigationController?.navigationBar.height ?? 44) + UIApplication.shared.statusBarFrame.height
         }
     }
+    
     func contentInsetBottom(_ calculate: Bool = true) -> CGFloat {
         if #available(iOS 11.0, *) , calculate == true {
             let edge = self.view.safeAreaInsets
             return edge.bottom
         } else {
             return 0
+        }
+    }
+    
+    func contentToolBarHeight() -> CGFloat {
+        if UIScreen.screenH == 812 {
+            return 34 + kToolBarHeight
+        } else {
+            return kToolBarHeight
         }
     }
     
@@ -82,6 +121,12 @@ extension WPFIPBaseVC {
         return false
     }
 
+}
+
+//MAKR: -
+extension WPFIPBaseVC {
+    
+    
 }
 
 //MARK: - Subclass methods

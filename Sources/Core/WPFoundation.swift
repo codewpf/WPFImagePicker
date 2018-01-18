@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Accelerate
 
 /// 自定义输出
 public func WPFLog<T>(_ message: T, fileName: String = #file, methodName: String =  #function, lineNumber: Int = #line)
@@ -19,7 +18,54 @@ public func WPFLog<T>(_ message: T, fileName: String = #file, methodName: String
     #endif
 }
 
-//MARK: - 
+//MARK: -
+public extension NSObject {
+    
+    class func swapMethod(originSel: Selector, swapSel: Selector) {
+        let originMet: Method = class_getInstanceMethod(self, originSel)
+        let swapMet: Method = class_getInstanceMethod(self, swapSel)
+        
+        let added = class_addMethod(self, originSel, method_getImplementation(swapMet), method_getTypeEncoding(swapMet))
+        if added == true {
+            class_replaceMethod(self, swapSel, method_getImplementation(originMet), method_getTypeEncoding(originMet))
+        } else {
+            method_exchangeImplementations(originMet, swapMet)
+        }
+    }
+    
+    func getMethodList() -> [String] {
+        var count: UInt32 = 0
+        guard let methodList = class_copyMethodList(type(of: self), &count) else {
+            return []
+        }
+        var mutabList: [String] = []
+        for i in 0 ..< count {
+            let method = methodList[Int(i)]
+            if let sel = method_getName(method) {
+                mutabList.append(NSStringFromSelector(sel))
+            }
+        }
+        return mutabList
+    }
+    
+    func getPropertyList() -> [String] {
+        var count: UInt32 = 0
+        guard let propertyList = class_copyPropertyList(type(of: self), &count) else {
+            return []
+        }
+        var mutabList: [String] = []
+        for i in 0 ..< count {
+            if let name = property_getName(propertyList[Int(i)]),
+                let nstr = NSString.init(utf8String: name) {
+                mutabList.append("\(nstr)")
+            }
+        }
+        return mutabList
+    }
+    
+}
+
+//MARK: -
 public extension Array where Element: Equatable {
     mutating func remove(object: Element) {
         if let index = index(of: object) {
@@ -33,7 +79,7 @@ public extension String {
     
     /// 字符串长度p
     var length: Int {
-        return self.characters.count
+        return self.count
     }
     
     var md5: String {
@@ -74,8 +120,9 @@ public extension String {
         }
         return self.substring(to: self.index(self.startIndex, offsetBy:String.IndexDistance(to)))
     }
-    /// 截取字符串 to
-    /// - Parameter to: 结束为止
+    
+    /// 截取字符串 Range
+    /// - Parameter range: 截取的区间
     func substring(range: NSRange) -> String {
         
         if let r = range.toRange() {
@@ -87,15 +134,21 @@ public extension String {
     }
     
     /// 替换字符串
-    mutating func replace(range: NSRange) {
+    mutating func replace(range: NSRange, place: String = "****") {
         
         if let r = range.toRange() {
             let start = self.index(self.startIndex, offsetBy: r.lowerBound)
             let end = self.index(self.startIndex, offsetBy: r.upperBound)
             let range = Range(start..<end)
             
-            self.replaceSubrange(range, with: "****")
+            self.replaceSubrange(range, with: place)
         }
+    }
+    
+    
+    func contains(_ str: String) -> Bool {
+        let nstr: NSString = NSString(string: self)
+        return nstr.contains(str)
     }
     
     
@@ -244,87 +297,6 @@ public extension UIImage {
         UIGraphicsEndImageContext()
         return newImage
     }
-    
-    func coreBlurImage(withBlur blur: CGFloat) -> UIImage {
-        
-        let context = CIContext(options: nil)
-        let inputImage = CIImage(image: self)
-        guard let filter = CIFilter(name: "CIGaussianBlur") else {
-            return self
-        }
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(blur, forKey: "inputRadius")
-        
-        guard let outputCIImage = filter.outputImage else {
-            return self
-        }
-        
-        let rect = CGRect(origin: CGPoint.zero, size: self.size)
-        guard let cgimage = context.createCGImage(outputCIImage, from: rect) else {
-            return self
-        }
-        
-        let result = UIImage(cgImage: cgimage)
-        
-        return result
-    }
-    
-    func boxBlurImage(withBlur tempBlur: CGFloat) -> UIImage {
-        var blur = tempBlur
-        if blur < 0.0 || blur > 1.0 {
-            blur = 0.5
-        }
-        var boxSize = Int(blur * 40)
-        boxSize = boxSize - (boxSize % 2) + 1
-        guard let img = self.cgImage else {
-            return self
-        }
-        
-        var inBuffer = vImage_Buffer()
-        var outBuffer = vImage_Buffer()
-        var error: vImage_Error!
-        var pixelBuffer: UnsafeMutableRawPointer
-        
-        // 从CGImage中获取数据
-        guard let inProvider = img.dataProvider else {
-            return self
-        }
-        
-        let inBitmapData = inProvider.data
-        
-        // 设置从CGImage获取对象的属性
-        inBuffer.width = UInt(img.width)
-        inBuffer.height = UInt(img.height)
-        inBuffer.rowBytes = img.bytesPerRow
-        inBuffer.data = UnsafeMutableRawPointer(mutating: CFDataGetBytePtr(inBitmapData))
-        pixelBuffer = malloc(img.bytesPerRow * img.height)
-        
-        outBuffer.data = pixelBuffer
-        outBuffer.width = UInt(img.width)
-        outBuffer.height = UInt(img.height)
-        outBuffer.rowBytes = img.bytesPerRow
-        
-        error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, nil, 0, 0, UInt32(boxSize), UInt32(boxSize), nil, UInt32(kvImageEdgeExtend))
-        if error != nil && error != 0 {
-            NSLog("error from convolution %ld", error)
-        }
-        
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let ctx = CGContext(data: outBuffer.data, width: Int(outBuffer.width), height: Int(outBuffer.height), bitsPerComponent: 8, bytesPerRow: outBuffer.rowBytes, space: colorSpace, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {
-            return self
-        }
-        
-        guard let imageRef = ctx.makeImage() else {
-            return self
-        }
-        let blurImage = UIImage(cgImage: imageRef)
-        
-        free(pixelBuffer)
-        
-        return blurImage
-    }
-    
-    
 }
 
 //MARK: -
@@ -344,7 +316,63 @@ public extension Bundle {
         guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else { return "1.0" }
         return version
     }
+    
+    var bundleLaunchImageName: String {
+        guard let info = Bundle.main.infoDictionary,
+            let assets: [[String:String]] = info["UILaunchImages"] as? [[String : String]] else {
+                return ""
+        }
+        
+        let sSize = UIScreen.main.bounds.size
+        print(sSize)
+        
+        var sOrientation = ""
+        switch UIApplication.shared.statusBarOrientation {
+        case .landscapeLeft, .landscapeRight :
+            sOrientation = "Landscape"
+        case .portrait, .portraitUpsideDown :
+            sOrientation = "Portrait"
+        default:
+            sOrientation = ""
+        }
+        
+        for asset in assets {
+            let size: CGSize = CGSizeFromString(asset["UILaunchImageSize"] ?? "{0, 0}")
+            let orientation = asset["UILaunchImageOrientation"] ?? ""
+            if size == sSize && orientation == sOrientation {
+                return asset["UILaunchImageName"] ?? ""
+            }
+            
+        }
+        return ""
+    }
 }
+//MARK: -
+public extension UINavigationBar {
+    public class func initializeNavigationBarOneMethod() {
+        DispatchQueue.once(token: "Update_UINavigationBar_Layout_Margin") {
+            self.swapMethod(originSel: #selector(layoutSubviews), swapSel: #selector(wpfLayoutSubviews))
+        }
+    }
+    
+    func wpfLayoutSubviews() {
+        self.wpfLayoutSubviews()
+        
+        // Solve the problem that left margin is too wide
+        if #available(iOS 11.0, *) {
+            self.layoutMargins = UIEdgeInsets.zero
+            let space: CGFloat = 8
+            for subview in self.subviews {
+                if NSStringFromClass(type(of: subview)).contains("ContentView") {
+                    subview.layoutMargins = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+                }
+            }
+        }
+        
+    }
+}
+
+
 
 //MARK: -
 public extension UIView {
@@ -518,6 +546,9 @@ public extension UIDevice {
         case "iPhone8,4":                               return "iPhone SE"
         case "iPhone9,1":                               return "iPhone 7"
         case "iPhone9,2":                               return "iPhone 7 Plus"
+        case "iPhone10,1", "iPhone10,4":                return "iPhone 8"
+        case "iPhone10,2", "iPhone10,5":                return "iPhone 8 Plus"
+        case "iPhone10,3", "iPhone10,6":                return "iPhone X"
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":return "iPad 2"
         case "iPad3,1", "iPad3,2", "iPad3,3":           return "iPad 3"
         case "iPad3,4", "iPad3,5", "iPad3,6":           return "iPad 4"
@@ -545,9 +576,27 @@ public extension Date {
     }
 }
 
+//MARK: -
+public extension DispatchQueue {
+    private static var onceTracker = [String]()
+    
+    public class func once(token: String, block:()->Void) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        
+        if onceTracker.contains(token) {
+            return
+        }
+        
+        onceTracker.append(token)
+        block()
+    }
+}
 
 
-//MARK: - MD5, it comes from Onevcat https://github.com/onevcat/
+
+
+//MARK: - MD5 method, it comes from Onevcat https://github.com/onevcat/
 protocol HashProtocol {
     var message: Array<UInt8> { get }
     

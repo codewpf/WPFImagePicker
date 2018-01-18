@@ -14,7 +14,7 @@ public class WPFIPListVC: WPFIPBaseVC {
     
     var cellHeight: CGFloat = 0
     
-    var dataSources: [PHAssetCollection] = []
+    var dataSources: [WPFIPListModel] = []
     let cellIdentifier = "wpf_ip_list_vc_cell"
     let tableView: UITableView = {
         let tv = UITableView(frame: CGRect.zero, style: .plain)
@@ -25,12 +25,12 @@ public class WPFIPListVC: WPFIPBaseVC {
     override public func viewDidLoad() {
         super.viewDidLoad()
         // title
-        self.navigationItem.title = Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle)
+        self.wpfTitle = Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle)
         
         // cancel barbtn
         let cancle = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelButtionClick))
         self.navigationItem.setRightBarButton(cancle, animated: false)
-
+        
         // table view
         self.tableView.frame = self.view.bounds
         self.tableView.delegate = self
@@ -72,23 +72,22 @@ extension WPFIPListVC: UITableViewDelegate, UITableViewDataSource {
         if cell == nil {
             cell = WPFIPListCell(style: .default, reuseIdentifier: self.cellIdentifier)
         }
-        let collection = self.dataSources[indexPath.row]
-        cell?.setValue(collection)
-        cell?.setCellHeight(WPFImagePicker.imagePicker.ipListCellHeight)
+        let listModel = self.dataSources[indexPath.row]
+        cell?.setValue(listModel)
+        cell?.setCellHeight(WPFImagePicker.imagePicker.conf.listCellHeight)
         return cell!
     }
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return WPFImagePicker.imagePicker.ipListCellHeight
+        return WPFImagePicker.imagePicker.conf.listCellHeight
     }
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        let collection = self.dataSources[indexPath.row]
-        let assets =  PHAsset.fetchAssets(in: collection, options: nil)
-        let grid = WPFIPGridVC(assets)
-        grid.navigationItem.title = collection.localizedTitle
-        self.navigationController?.pushViewController(grid, animated: true)
         
+        let listModel = self.dataSources[indexPath.row]
+        WPFIPManager.manager.listModel = listModel
+        let grid = WPFIPGridVC()
+        grid.wpfTitle = listModel.title
+        self.navigationController?.pushViewController(grid, animated: true)
     }
 }
 
@@ -113,27 +112,21 @@ class WPFIPListCell: UITableViewCell {
         
     }
     
-    func setValue(_ collection: PHAssetCollection) {
+    func setValue(_ listModel: WPFIPListModel) {
         
-        let assets = PHAsset.fetchAssets(in: collection, options: nil)
-        if assets.count > 0 {
-            self.ipImageView.contentMode = .scaleAspectFill
-
-            PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height*2, height: self.height*2), contentMode: .default, options: nil) { (image, _) in
+        if let model = listModel.thumbAsset {
+            PHImageManager.default().requestImage(for: model.asset, targetSize: CGSize(width: self.height*2, height: self.height*2), contentMode: .default, options: nil) { (image, _) in
                 self.ipImageView.image = image
             }
         } else {
-            self.ipImageView.contentMode = .scaleAspectFit
-
             self.ipImageView.image = UIImage(named: "image_default", in: Bundle.wpf(), compatibleWith: nil)
         }
-        
-        self.titleLabel.text = collection.localizedTitle
+        self.ipImageView.contentMode = .scaleAspectFit
+        self.titleLabel.text = listModel.title
         self.titleLabel.sizeToFit()
         
-        self.countLabel.text = "（\(assets.count)）"
+        self.countLabel.text = "（\(listModel.models.count)）"
         self.countLabel.sizeToFit()
-        
     }
     
     func setCellHeight(_ height: CGFloat) {

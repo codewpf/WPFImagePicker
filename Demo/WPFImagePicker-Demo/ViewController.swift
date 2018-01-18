@@ -34,6 +34,9 @@ class ViewController: UIViewController {
 
     
     func btnClick() {
+        var conf = WPFIPConfiguration.default
+        conf.languge = .simplified
+        WPFImagePicker.imagePicker.conf = conf
         WPFImagePicker.imagePicker.start(withPresenting: self)
     }
     

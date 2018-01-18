@@ -15,14 +15,13 @@ typealias WPFIPVoidBlock = () -> Void
 //MARK: -
 public class WPFImagePicker: NSObject {
     
+    /// single delegate 单例
     public static let imagePicker: WPFImagePicker = WPFImagePicker()
     
-    /// The list view controller cell height
-    public var ipListCellHeight: CGFloat = 57
-    /// The max of the selecteds
-    public var ipMaxSeleted: Int = 9
+    /// The default configuration 默认配置
+    public var conf: WPFIPConfiguration = WPFIPConfiguration.default
     
-    /// The view controller that presented this view controller
+    /// The view controller that presented this view controller 父控制视图
     fileprivate var privatePresentingVC: UIViewController?
     public var presentingVC: UIViewController? {
         get {
@@ -33,6 +32,7 @@ public class WPFImagePicker: NSObject {
         super.init()
     }
     
+    /// invoke album 调用相册
     public func start(withPresenting presenting: UIViewController) {
         self.privatePresentingVC = presenting
         self.verifyPhotosAuthorizationStatus()
@@ -43,40 +43,44 @@ public class WPFImagePicker: NSObject {
 //MARK: - Photos Authorization
 extension WPFImagePicker {
     
-    /// verify photos authorization
+    /// verify photos authorization 验证相册授权状态
     func verifyPhotosAuthorizationStatus(_ status: PHAuthorizationStatus = PHPhotoLibrary.authorizationStatus()) {
         switch status {
         case .notDetermined:
-            self.authorizationRequest()
+            DispatchQueue.main.async {
+                self.authorizationRequest()
+            }
         case .authorized:
-            self.authorizationAuthorized()
+            DispatchQueue.main.async {
+                self.authorizationAuthorized()
+            }
         case .denied, .restricted:
             self.authorizationDenied()
         }
         
     }
-    /// authorization request
+    /// authorization request 申请授权状态
     func authorizationRequest() {
         PHPhotoLibrary.requestAuthorization { (status) in
             self.verifyPhotosAuthorizationStatus(status)
         }
     }
     
-    /// authorization have authorized
+    /// authorization have authorized 授权通过
     func authorizationAuthorized() {
         let list = WPFIPListVC()
         let nav = UINavigationController(rootViewController: list)
-        
-        if let collection = WPFIPManager.manager.fetchUserLibrary() {
-            let assets =  PHAsset.fetchAssets(in: collection, options: nil)
-            let grid = WPFIPGridVC(assets)
-            grid.navigationItem.title = collection.localizedTitle
+
+        if let listModel = WPFIPManager.manager.fetchUserLibrary() {
+            WPFIPManager.manager.listModel = listModel
+            let grid = WPFIPGridVC()
+            grid.wpfTitle = listModel.title
             nav.pushViewController(grid, animated: false)
         }
-        
+
         self.privatePresentingVC!.showDetailViewController(nav, sender: nav)
     }
-    /// authorization have denied
+    /// authorization have denied 授权拒绝
     func authorizationDenied() {
         
         let denied = WPFIPDeniedVC()
@@ -91,6 +95,7 @@ extension WPFImagePicker {
 
 //MARK: -
 struct WPFIPConstants {
+    /// language key
     struct ConstantKeys {
         let imagePickerDeniedText  = "WPFImagePickerAuthorizationDeniedText"
         
@@ -145,108 +150,6 @@ extension Bundle {
         return bundle.localizedString(forKey: key, value: nil, table: nil)
     }
 }
-
-public extension DispatchQueue {
-    private static var onceTracker = [String]()
-    
-    public class func once(token: String, block:()->Void) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-        
-        if onceTracker.contains(token) {
-            return
-        }
-        
-        onceTracker.append(token)
-        block()
-    }
-}
-
-extension NSObject {
-    
-    class func swapMethod(originSel: Selector, swapSel: Selector) {
-        let originMet: Method = class_getInstanceMethod(self, originSel)
-        let swapMet: Method = class_getInstanceMethod(self, swapSel)
-        
-        let added = class_addMethod(self, originSel, method_getImplementation(swapMet), method_getTypeEncoding(swapMet))
-        if added == true {
-            class_replaceMethod(self, swapSel, method_getImplementation(originMet), method_getTypeEncoding(originMet))
-        } else {
-            method_exchangeImplementations(originMet, swapMet)
-        }
-    }
-    
-}
-
-extension UIView {
-    open static func initializeOneMethod()  {
-        DispatchQueue.once(token: "com.alex.WPFImagePicker") {
-            self.swapMethod(originSel: #selector(layoutSubviews), swapSel: #selector(wpfipLayoutSubview))
-        }
-        
-    }
-    
-    func wpfipLayoutSubview() {
-        
-        if let selfClazz = NSClassFromString("_UIModernBarButton"),
-            self.isKind(of: selfClazz),
-            let supView = self.superview,
-            let supClazz = NSClassFromString("_UIBackButtonContainerView"),
-            supView.isKind(of: supClazz) {
-            let btn: UIButton = self as! UIButton
-//            if btn.titleLabel?.text == Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerListVCTitle) {
-            
-                let title = Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerGridVCBackBbiTitle)
-                btn.setTitle(title, for: UIControlState.init(rawValue: 0))
-                _ = btn.titleLabel?.text
-                btn.setTitle(title, for: .highlighted)
-                _ = btn.titleLabel?.text
-//            }
-        }
-        self.wpfipLayoutSubview()
-    }
-    
-    func getMethodList() -> [String] {
-        var count: UInt32 = 0
-        guard let methodList = class_copyMethodList(type(of: self), &count) else {
-            return []
-        }
-        var mutabList: [String] = []
-        for i in 0 ..< count {
-            let method = methodList[Int(i)]
-            if let sel = method_getName(method) {
-                mutabList.append(NSStringFromSelector(sel))
-            }
-        }
-        return mutabList
-    }
-    
-    func getPropertyList() -> [String] {
-        var count: UInt32 = 0
-        guard let propertyList = class_copyPropertyList(type(of: self), &count) else {
-            return []
-        }
-        var mutabList: [String] = []
-        for i in 0 ..< count {
-            if let name = property_getName(propertyList[Int(i)]),
-                let nstr = NSString.init(utf8String: name) {
-                mutabList.append("\(nstr)")
-            }
-        }
-        return mutabList
-    }
-    
-    
-}
-
-
-
-
-
-
-
-
-
 
 
 
