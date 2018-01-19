@@ -93,63 +93,7 @@ extension WPFImagePicker {
 }
 
 
-//MARK: -
-struct WPFIPConstants {
-    /// language key
-    struct ConstantKeys {
-        let imagePickerDeniedText  = "WPFImagePickerAuthorizationDeniedText"
-        
-        let imagePickerListVCTitle = "WPFImagePickerListVCTitle"
-        
-        let imagePickerGridVCPreviewBbiTitle = "WPFImagePickerGridVCPreviewBbiTitle"
-        let imagePickerGridVCFullImageBbiTitle = "WPFImagePickerGridVCFullImageBbiTitle"
-        let imagePickerGridVCSendBbiTitle = "WPFImagePickerGridVCSendBbiTitle"
-        let imagePickerGridVCEditBbiTitle = "WPFImagePickerGridVCEditBbiTitle"
-        let imagePickerGridVCBackBbiTitle = "WPFImagePickerGridVCBackBbiTitle"
-        
-        let imagePickerMAXSlectedAlertMessage = "WPFImagePickerMAXSlectedAlertMessage"
-        let imagePickerMAXSlectedAlertBtnTitle = "WPFImagePickerMAXSlectedAlertBtnTitle"
-    }
-    static let keys: ConstantKeys = ConstantKeys()
-}
 
-//MARK: -
-extension Bundle {
-    class func wpf() -> Bundle? {
-        guard let path = Bundle.main.path(forResource: "WPFImagePicker", ofType: "bundle"),
-            let bundle = Bundle(path: path) else {
-                return nil
-        }
-        return bundle
-    }
-    
-    func localizeString(forkey key: String) -> String {
-        return self.localizedString(forKey: key, value: nil, table: "Localizable")
-    }
-    
-    class func localizeString(forkey key: String) -> String {
-        guard var language = NSLocale.preferredLanguages.first else {
-            return "did not have except language "
-        }
-        if language.hasPrefix("en") {
-            language = "en"
-        } else if language.hasPrefix("zh") {
-            if language.range(of: "Hans") != nil {
-                language = "zh-Hans"
-            } else {
-                language = "zh-Hant"
-            }
-        } else {
-            language = "en"
-        }
-        
-        guard let path = self.wpf()?.path(forResource: language, ofType: "lproj") ,
-            let bundle = Bundle(path: path) else {
-                return "did not have except lproj files"
-        }
-        return bundle.localizedString(forKey: key, value: nil, table: nil)
-    }
-}
 
 
 

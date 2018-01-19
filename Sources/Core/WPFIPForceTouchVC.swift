@@ -8,12 +8,18 @@
 
 import UIKit
 import Photos
+import PhotosUI
 
 class WPFIPForceTouchVC: WPFIPBaseVC {
 
-    let asset: PHAsset
-    init(_ asset: PHAsset) {
-        self.asset = asset
+    /// 当前 item 索引
+    let index: Int
+    /// 当前 item 资源
+    let model: WPFIPModel
+    
+    init(_ index: Int) {
+        self.index = index
+        self.model = WPFIPManager.manager.listModel.models[index]
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,16 +39,101 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
             self.ipImageView.image = image
         }
 */
-        
+        switch self.model.type {
+        case .image: self.initImage()
+//        case .gif: self.initGIF()
+        case .gif: self.initImage()
+        case .livePhoto: self.initLivePhoto()
+        case .video: self.initVideo()
+        default: break
+        }
         
         
 
     }
     
+    
+    func initImage() {
+        let size = self.size()
+        let imageView = UIImageView(frame: CGRect(origin: CGPoint.zero, size: size))
+        imageView.contentMode = .scaleAspectFit
+        self.view.addSubview(imageView)
+        
+        WPFLog("start")
+        WPFIPManager.manager.requestImage(for: self.model.asset, size: CGSize(width: size.width*2, height: size.height*2)) { (result, image, _) in
+            if result == true {
+                WPFLog("end")
+                imageView.image = image
+            }
+        }
+        
+    }
+    
+    func initGIF() {
+        let size = self.size()
+        let imageView = UIImageView(frame: CGRect(origin: CGPoint.zero, size: size))
+        imageView.contentMode = .scaleAspectFit
+        self.view.addSubview(imageView)
+        
+        WPFLog("start")
+        WPFIPManager.manager.requestImageData(for: self.model.asset) { (result, data, _) in
+            WPFLog("mid")
+            if result == true, let image = data.toGIF() {
+                imageView.image = image
+                WPFLog("end")
+            } else {
+                WPFLog("出错")
+            }
+        }
+        
+        
+    }
+    
+    func initLivePhoto() {
+        
+        let size = self.size()
+        let livePhotoView: PHLivePhotoView = PHLivePhotoView(frame: CGRect(origin: CGPoint.zero, size: size))
+        livePhotoView.contentMode = .scaleAspectFit
+        self.view.addSubview(livePhotoView)
+        
+        WPFIPManager.manager.requestLivePhoto(for: self.model.asset) { (result, livePhoto, _) in
+            if result == true {
+                livePhotoView.livePhoto = livePhoto
+                livePhotoView.startPlayback(with: .full)
+            }
+        }
+        
+        
+    }
+    
+    func initVideo() {
+        let size = self.size()
+        let playLayer = AVPlayerLayer()
+        playLayer.frame = CGRect(origin: CGPoint.zero, size: size)
+        self.view.layer.addSublayer(playLayer)
+        
+        WPFIPManager.manager.requestVideo(for: self.model.asset) { (result, item, _) in
+            if result == true {
+                DispatchQueue.main.async {
+                    let player = AVPlayer(playerItem: item)
+                    playLayer.player = player
+                    player.play()
+                }
+            }
+        }
+        
+        
+    }
+    
+    
+    
+    
+    
+    
     func size() -> CGSize {
         
-        var w: CGFloat = min(CGFloat(self.asset.pixelWidth), UIScreen.screenW)
-        var h: CGFloat = w * CGFloat(self.asset.pixelHeight) / CGFloat(self.asset.pixelWidth)
+        var w: CGFloat = min(CGFloat(self.model.asset.pixelWidth), UIScreen.screenW)
+        var h: CGFloat = w * CGFloat(self.model.asset.pixelHeight) / CGFloat(self.model.asset.pixelWidth)
         
         if h.isNaN == true {
             return CGSize.zero
@@ -50,7 +141,7 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         
         if h > UIScreen.screenH {
             h = UIScreen.screenH
-            w = h * CGFloat(self.asset.pixelWidth) / CGFloat(self.asset.pixelHeight)
+            w = h * CGFloat(self.model.asset.pixelWidth) / CGFloat(self.model.asset.pixelHeight)
         }
         
         return CGSize(width: w, height: h)

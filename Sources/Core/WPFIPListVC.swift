@@ -121,7 +121,7 @@ class WPFIPListCell: UITableViewCell {
         } else {
             self.ipImageView.image = UIImage(named: "image_default", in: Bundle.wpf(), compatibleWith: nil)
         }
-        self.ipImageView.contentMode = .scaleAspectFit
+        self.ipImageView.contentMode = .scaleAspectFill
         self.titleLabel.text = listModel.title
         self.titleLabel.sizeToFit()
         

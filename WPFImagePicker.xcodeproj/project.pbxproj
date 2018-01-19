@@ -15,6 +15,7 @@
 		FA30FDFC200E033E00264D99 /* WPFIPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA30FDFB200E033E00264D99 /* WPFIPModel.swift */; };
 		FA30FDFE200EF27600264D99 /* WPFIPConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA30FDFD200EF27600264D99 /* WPFIPConfiguration.swift */; };
 		FA30FE00200F3D1100264D99 /* WPFIPDefines.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA30FDFF200F3D1100264D99 /* WPFIPDefines.swift */; };
+		FA30FE022011908700264D99 /* WPFIPExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA30FE012011908700264D99 /* WPFIPExtension.swift */; };
 		FA86EA321F46D511006D729A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA2A1F46D511006D729A /* Assets.xcassets */; };
 		FA86EA351F46D511006D729A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA2F1F46D511006D729A /* Info.plist */; };
 		FA86EA3E1F46D518006D729A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA86EA391F46D518006D729A /* Info.plist */; };
@@ -81,6 +82,7 @@
 		FA30FDFB200E033E00264D99 /* WPFIPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPModel.swift; sourceTree = "<group>"; };
 		FA30FDFD200EF27600264D99 /* WPFIPConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPConfiguration.swift; sourceTree = "<group>"; };
 		FA30FDFF200F3D1100264D99 /* WPFIPDefines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPDefines.swift; sourceTree = "<group>"; };
+		FA30FE012011908700264D99 /* WPFIPExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPFIPExtension.swift; sourceTree = "<group>"; };
 		FA86E9E41F46D365006D729A /* WPFImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WPFImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA86E9F21F46D3FC006D729A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA86E9F31F46D3FC006D729A /* WPFImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPFImagePicker.h; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				FA965D0F1F73B20900E9F96A /* WPFIPBaseVC.swift */,
 				FAA4D2511F4EA723006888F6 /* WPFIPManager.swift */,
 				FA2158F61F7514100099C2A6 /* WPFImagePicker.swift */,
+				FA30FE012011908700264D99 /* WPFIPExtension.swift */,
 				FA30FDFB200E033E00264D99 /* WPFIPModel.swift */,
 				FA30FDFF200F3D1100264D99 /* WPFIPDefines.swift */,
 				FA30FDFD200EF27600264D99 /* WPFIPConfiguration.swift */,
@@ -425,6 +428,7 @@
 				FA30FDFC200E033E00264D99 /* WPFIPModel.swift in Sources */,
 				FA30FE00200F3D1100264D99 /* WPFIPDefines.swift in Sources */,
 				FA30FDFA200D943B00264D99 /* WPFIPForceTouchVC.swift in Sources */,
+				FA30FE022011908700264D99 /* WPFIPExtension.swift in Sources */,
 				FA2158FB1F751CD10099C2A6 /* WPFIPGridVC.swift in Sources */,
 				FA30FDFE200EF27600264D99 /* WPFIPConfiguration.swift in Sources */,
 				FAA4D2501F4E890E006888F6 /* WPFIPListVC.swift in Sources */,

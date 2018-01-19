@@ -118,30 +118,64 @@ extension WPFIPManager {
 
 
 //MARK: - 图片
-typealias WPFIPImageBlock = (_ result: Bool, _ image: UIImage, _ info: [AnyHashable: Any]?) -> Void
+typealias WPFIPImageBlock = (_ result: Bool, _ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void
+typealias WPFIPImageDataBlock = (_ result: Bool, _ data: Data, _ info: [AnyHashable: Any]?) -> Void
 typealias WPFIPLivePhotoBlock = (_ result: Bool, _ livePhoto: PHLivePhoto, _ info: [AnyHashable: Any]?) -> Void
 typealias WPFIPVideoBlock = (_ result: Bool, _ item:AVPlayerItem, _ info: [AnyHashable: Any]?) -> Void
 
 extension WPFIPManager {
     
-    /// 获取图片
-    func requestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, completion: @escaping WPFIPImageBlock) {
+    class func testrequestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, contentMode: PHImageContentMode = .default, completion: @escaping WPFIPImageBlock) {
         
         let options = PHImageRequestOptions()
         options.resizeMode = resizeMode
         
-        PHCachingImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options) { (image, info) in
-            guard
-                let imageTemp = image,
-                let infoTemp = info,
-                let cancel = infoTemp[PHImageCancelledKey] as? NSNumber,
-                cancel.boolValue == false,
-                infoTemp[PHImageErrorKey] == nil else {
-                completion(false,UIImage(), [:])
-                return
-            }
-            completion(true,imageTemp,info)
+        PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: contentMode, options: options) { (image, info) in
+            //            guard
+            //                let imageTemp = image,
+            //                let infoTemp = info,
+            //                infoTemp[PHImageErrorKey] == nil else {
+            //                completion(false,UIImage(), [:])
+            //                return
+            //            }
+            completion(true,image,info)
         }
+    }
+
+    
+    /// 获取图片
+    func requestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, contentMode: PHImageContentMode = .default, completion: @escaping WPFIPImageBlock) {
+        
+        let options = PHImageRequestOptions()
+        options.resizeMode = resizeMode
+        
+        PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: contentMode, options: options) { (image, info) in
+//            guard
+//                let imageTemp = image,
+//                let infoTemp = info,
+//                infoTemp[PHImageErrorKey] == nil else {
+//                completion(false,UIImage(), [:])
+//                return
+//            }
+            completion(true,image,info)
+        }
+    }
+    
+    /// 获取图片 二进制数据
+    func requestImageData(for asset: PHAsset, completion: @escaping WPFIPImageDataBlock) {
+        let options = PHImageRequestOptions()
+        options.resizeMode = .fast
+        PHImageManager.default().requestImageData(for: asset, options: options) { (data, _, _, info) in
+            guard
+                let dataTemp = data,
+                let infoTemp = info,
+                infoTemp[PHImageErrorKey] == nil else {
+                    completion(false,Data(), [:])
+                    return
+            }
+            completion(true,dataTemp,info)
+        }
+        
     }
     
     /// 获取实况图片
@@ -151,7 +185,7 @@ extension WPFIPManager {
         options.version = .current
         options.deliveryMode = .opportunistic
         
-        PHCachingImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (livePhoto, info) in
+        PHImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (livePhoto, info) in
             guard let livePhotoTemp = livePhoto else {
                 completion(false, PHLivePhoto(), info)
                 return
@@ -163,7 +197,7 @@ extension WPFIPManager {
     /// 获取视频
     func requestVideo(for asset: PHAsset, completion: @escaping WPFIPVideoBlock) {
         let optiions = PHVideoRequestOptions()
-        PHCachingImageManager.default().requestPlayerItem(forVideo: asset, options: optiions) { (item, info) in
+        PHImageManager.default().requestPlayerItem(forVideo: asset, options: optiions) { (item, info) in
             guard let itemTemp = item else {
                 completion(false, item!, info)
                 return
@@ -219,6 +253,8 @@ extension WPFIPManager {
             
         }
     }
+    
+    
     
 }
 

@@ -37,3 +37,24 @@ public enum WPFIPLanguage {
     case english
     
 }
+
+
+/// 键值
+struct WPFIPConstants {
+    /// language key
+    struct ConstantKeys {
+        let imagePickerDeniedText  = "WPFImagePickerAuthorizationDeniedText"
+        
+        let imagePickerListVCTitle = "WPFImagePickerListVCTitle"
+        
+        let imagePickerGridVCPreviewBbiTitle = "WPFImagePickerGridVCPreviewBbiTitle"
+        let imagePickerGridVCFullImageBbiTitle = "WPFImagePickerGridVCFullImageBbiTitle"
+        let imagePickerGridVCSendBbiTitle = "WPFImagePickerGridVCSendBbiTitle"
+        let imagePickerGridVCEditBbiTitle = "WPFImagePickerGridVCEditBbiTitle"
+        let imagePickerGridVCBackBbiTitle = "WPFImagePickerGridVCBackBbiTitle"
+        
+        let imagePickerMAXSlectedAlertMessage = "WPFImagePickerMAXSlectedAlertMessage"
+        let imagePickerMAXSlectedAlertBtnTitle = "WPFImagePickerMAXSlectedAlertBtnTitle"
+    }
+    static let keys: ConstantKeys = ConstantKeys()
+}

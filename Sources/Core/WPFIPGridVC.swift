@@ -72,20 +72,28 @@ class WPFIPGridVC: WPFIPBaseVC {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.contentView.addSubview(self.collectionView)
-        
+        registerForPreviewing(with: self, sourceView: self.collectionView)
+
         // toolbar
         self.initToolBar()
         
     }
     
+    var initScroll: Int = 0
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         /// 第一次进入当前页面滚动到底部
-        DispatchQueue.once(token: "\(self)-viewDidLayoutSubviews-\(Date().timeIntervalSince1970)") {
+
+        if self.initScroll == 0 {
+            self.initScroll = 1
             if WPFIPManager.manager.listModel.count > 1 {
                 self.collectionView.scrollToItem(at: IndexPath(item: WPFIPManager.manager.listModel.count - 1, section: 0), at: .top, animated: false)
             }
+
         }
+
     }
     
     
@@ -310,7 +318,6 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
             cell.updateBtn(selectIndex: idx+1, newState: true, false)
         }
         
-        registerForPreviewing(with: self, sourceView: cell)
         return cell
     }
 }
@@ -319,33 +326,42 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
 extension WPFIPGridVC: UIViewControllerPreviewingDelegate {
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let cell = previewingContext.sourceView as? WPFIPGridCell else {
+        guard
+            let indexPath = self.collectionView.indexPathForItem(at: location) else {
             return nil
         }
         
+        guard let cell = self.collectionView.cellForItem(at: indexPath) as? WPFIPGridCell  else {
+            return nil
+        }
+        
+        
         previewingContext.sourceRect = cell.frame
         
+        let forceTouchVC = WPFIPForceTouchVC(cell.row)
+        forceTouchVC.preferredContentSize = forceTouchVC.size()
+        return forceTouchVC
         
-        let prevc = WPFIPPreviewVC(all: cell.row)
-        prevc.preferredContentSize = CGSize(width: 100, height: 100)
-        prevc.backBlock = { [weak self] in
-            self?.updateNavigation(isHidden: false, subvc: prevc)
-        }
-        return prevc
     }
 
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-        guard let prevc = viewControllerToCommit as? WPFIPPreviewVC  else {
+        
+        guard let forceTouchVC = viewControllerToCommit as? WPFIPForceTouchVC else {
             return
         }
         
-        self.addChildViewController(prevc)
-        prevc.view.frame = CGRect(x: self.view.bounds.width, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-        self.view.addSubview(prevc.view)
-        prevc.didMove(toParentViewController: self)
+        let preview = WPFIPPreviewVC(all: forceTouchVC.index)
+        preview.backBlock = { [weak self] in
+            self?.updateNavigation(isHidden: false, subvc: preview)
+        }
         
-        self.updateNavigation(isHidden: true, subvc: prevc)
+        self.addChildViewController(preview)
+        preview.view.frame = CGRect(x: self.view.bounds.width, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+        self.view.addSubview(preview.view)
+        preview.didMove(toParentViewController: self)
+
+        self.updateNavigation(isHidden: true, subvc: preview)
     }
     
 }
@@ -413,11 +429,14 @@ class WPFIPGridCell: UICollectionViewCell {
     
     //
     func setValue(_ model: WPFIPModel, _ row: Int, _ canClick: Bool) {
-        //        WPFLog("row = \(row) start")
         let width = ((UIScreen.screenW - kGridGap * (kGridLines + 1)) / kGridLines ) * 3
-        PHImageManager.default().requestImage(for: model.asset, targetSize: CGSize(width: width, height: width), contentMode: .default, options: nil) { (image, _) in
-            //            WPFLog("row = \(row) end ")
-            self.imageView.image = image
+
+        DispatchQueue.global().async {
+            WPFIPManager.testrequestImage(for: model.asset, size: CGSize(width: width, height: width)) { (restult, image, _) in
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            }
         }
         
         self.row = row
