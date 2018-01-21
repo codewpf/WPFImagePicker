@@ -32,6 +32,9 @@ public struct WPFIPConfiguration {
     /// 是否允许Force Touch功能，默认为 true
     public var canForceTouch: Bool = true
     
+    /// 是否允许GIF ForrceTouch，默认为 false；比较消耗资源
+    public var canFTGif: Bool = false
+    
     /// 是否允许滑动选择（类似系统相册功能），默认为 true
     public var canSlideSelect: Bool = true
 
@@ -72,6 +75,7 @@ public struct WPFIPConfiguration {
         
         self.pDefault.canSelectOriginal = true
         self.pDefault.canForceTouch = true
+        self.pDefault.canFTGif = false
         self.pDefault.canSlideSelect = true
         self.pDefault.fromBottom = true
         

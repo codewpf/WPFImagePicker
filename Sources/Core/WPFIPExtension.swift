@@ -57,7 +57,7 @@ extension Data {
 
         let count = CGImageSourceGetCount(source)
         var result: UIImage? = nil
-
+        
         if count <= 1 {
             result = UIImage(data: self)
         } else {
@@ -70,7 +70,11 @@ extension Data {
                 duration += self.duration(at: i, source: source)
                 images.append(UIImage(cgImage: image, scale: UIScreen.main.scale, orientation: .up))
             }
-            duration = 1.0 / 10.0 * Double(count)
+            if duration == 0 {
+                duration = 1.0 / 18.0 * Double(count)
+            }
+            
+            
             result = UIImage.animatedImage(with: images, duration: duration)
         }
 
@@ -79,13 +83,15 @@ extension Data {
     
     /// 获取GIF内单个图片时间
     func duration(at index: Int, source: CGImageSource) -> TimeInterval {
+        
         var duration = 0.1
-        guard let properties = CGImageSourceCopyProperties(source, nil) as? [CFString: Any] else {
+        guard let properties = CGImageSourceCopyPropertiesAtIndex(source, index,nil) as? [CFString: Any] else {
             return duration
         }
         guard let gifDictionary = properties[kCGImagePropertyGIFDictionary] as? [CFString: Any] else {
             return duration
         }
+
         if let unclampedDelayTime = gifDictionary[kCGImagePropertyGIFUnclampedDelayTime] as? NSNumber {
             duration = unclampedDelayTime.doubleValue
         } else {
@@ -93,7 +99,6 @@ extension Data {
                 duration = delayTime.doubleValue
             }
         }
-        
         if duration < 0.011 {
             duration = 0.1
         }

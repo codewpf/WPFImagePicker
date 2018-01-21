@@ -72,7 +72,9 @@ class WPFIPGridVC: WPFIPBaseVC {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         self.contentView.addSubview(self.collectionView)
-        registerForPreviewing(with: self, sourceView: self.collectionView)
+        if WPFImagePicker.imagePicker.conf.canForceTouch == true {
+            registerForPreviewing(with: self, sourceView: self.collectionView)
+        }
 
         // toolbar
         self.initToolBar()

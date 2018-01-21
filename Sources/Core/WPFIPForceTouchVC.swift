@@ -34,15 +34,14 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         self.view.backgroundColor = UIColor(white: 0.8, alpha: 0.5)
         
         
-        /*
-        PHImageManager.default().requestImage(for: assets.lastObject!, targetSize: CGSize(width: self.height*2, height: self.height*2), contentMode: .default, options: nil) { (image, _) in
-            self.ipImageView.image = image
-        }
-*/
         switch self.model.type {
         case .image: self.initImage()
-//        case .gif: self.initGIF()
-        case .gif: self.initImage()
+        case .gif:
+            if WPFImagePicker.imagePicker.conf.canFTGif == true {
+                self.initGIF()
+            } else {
+                self.initImage()
+            }
         case .livePhoto: self.initLivePhoto()
         case .video: self.initVideo()
         default: break
@@ -55,14 +54,12 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
     
     func initImage() {
         let size = self.size()
-        let imageView = UIImageView(frame: CGRect(origin: CGPoint.zero, size: size))
+        let imageView = UIImageView(frame: CGRect(x: -1, y: -1, width: size.width+2, height: size.height+2))
         imageView.contentMode = .scaleAspectFit
         self.view.addSubview(imageView)
         
-        WPFLog("start")
         WPFIPManager.manager.requestImage(for: self.model.asset, size: CGSize(width: size.width*2, height: size.height*2)) { (result, image, _) in
             if result == true {
-                WPFLog("end")
                 imageView.image = image
             }
         }
@@ -75,14 +72,9 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         imageView.contentMode = .scaleAspectFit
         self.view.addSubview(imageView)
         
-        WPFLog("start")
         WPFIPManager.manager.requestImageData(for: self.model.asset) { (result, data, _) in
-            WPFLog("mid")
             if result == true, let image = data.toGIF() {
                 imageView.image = image
-                WPFLog("end")
-            } else {
-                WPFLog("出错")
             }
         }
         
