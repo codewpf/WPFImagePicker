@@ -434,7 +434,7 @@ class WPFIPGridCell: UICollectionViewCell {
         let width = ((UIScreen.screenW - kGridGap * (kGridLines + 1)) / kGridLines ) * 3
 
         DispatchQueue.global().async {
-            WPFIPManager.testrequestImage(for: model.asset, size: CGSize(width: width, height: width)) { (restult, image, _) in
+            _ = WPFIPManager.manager.requestImage(for: model.asset, size: CGSize(width: width, height: width)) { (restult, image, _) in
                 DispatchQueue.main.async {
                     self.imageView.image = image
                 }

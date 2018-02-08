@@ -37,12 +37,17 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         switch self.model.type {
         case .image: self.initImage()
         case .gif:
-            if WPFImagePicker.imagePicker.conf.canFTGif == true {
+            if WPFImagePicker.imagePicker.conf.autoPlayGif == true {
                 self.initGIF()
             } else {
                 self.initImage()
             }
-        case .livePhoto: self.initLivePhoto()
+        case .livePhoto:
+            if WPFImagePicker.imagePicker.conf.autoPlayLivePhoto == true {
+                self.initLivePhoto()
+            } else {
+                self.initImage()
+            }
         case .video: self.initVideo()
         default: break
         }
@@ -58,7 +63,7 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         imageView.contentMode = .scaleAspectFit
         self.view.addSubview(imageView)
         
-        WPFIPManager.manager.requestImage(for: self.model.asset, size: CGSize(width: size.width*2, height: size.height*2)) { (result, image, _) in
+        _ = WPFIPManager.manager.requestImage(for: self.model.asset, size: CGSize(width: size.width*2, height: size.height*2)) { (result, image, _) in
             if result == true {
                 imageView.image = image
             }
@@ -72,7 +77,7 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         imageView.contentMode = .scaleAspectFit
         self.view.addSubview(imageView)
         
-        WPFIPManager.manager.requestImageData(for: self.model.asset) { (result, data, _) in
+        _ = WPFIPManager.manager.requestImageData(for: self.model.asset) { (result, data, _) in
             if result == true, let image = data.toGIF() {
                 imageView.image = image
             }
@@ -88,7 +93,7 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         livePhotoView.contentMode = .scaleAspectFit
         self.view.addSubview(livePhotoView)
         
-        WPFIPManager.manager.requestLivePhoto(for: self.model.asset) { (result, livePhoto, _) in
+        _ = WPFIPManager.manager.requestLivePhoto(for: self.model.asset) { (result, livePhoto, _) in
             if result == true {
                 livePhotoView.livePhoto = livePhoto
                 livePhotoView.startPlayback(with: .full)
@@ -104,7 +109,7 @@ class WPFIPForceTouchVC: WPFIPBaseVC {
         playLayer.frame = CGRect(origin: CGPoint.zero, size: size)
         self.view.layer.addSublayer(playLayer)
         
-        WPFIPManager.manager.requestVideo(for: self.model.asset) { (result, item, _) in
+        _ = WPFIPManager.manager.requestVideo(for: self.model.asset) { (result, item, _) in
             if result == true {
                 DispatchQueue.main.async {
                     let player = AVPlayer(playerItem: item)

@@ -36,7 +36,7 @@ class ViewController: UIViewController {
     func btnClick() {
         var conf = WPFIPConfiguration.default
         conf.languge = .simplified
-        conf.canFTGif = true
+        conf.autoPlayGif = true
         WPFImagePicker.imagePicker.conf = conf
         WPFImagePicker.imagePicker.start(withPresenting: self)
     }

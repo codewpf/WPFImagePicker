@@ -20,6 +20,18 @@ struct WPFIPModel {
     /// 图片
     var image: UIImage? = nil
 
+    init() {
+        self.asset = PHAsset()
+        self.type = .unknown
+        self.duration = "00:00"
+        self.image = nil
+    }
+    init(asset: PHAsset, type: WPFIPAssetType, duration: String, image: UIImage?) {
+        self.asset = asset
+        self.type = type
+        self.duration = duration
+        self.image = image
+    }
     
 }
 

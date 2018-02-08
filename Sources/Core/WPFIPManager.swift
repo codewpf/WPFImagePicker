@@ -125,31 +125,13 @@ typealias WPFIPVideoBlock = (_ result: Bool, _ item:AVPlayerItem, _ info: [AnyHa
 
 extension WPFIPManager {
     
-    class func testrequestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, contentMode: PHImageContentMode = .default, completion: @escaping WPFIPImageBlock) {
-        
-        let options = PHImageRequestOptions()
-        options.resizeMode = resizeMode
-        
-        PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: contentMode, options: options) { (image, info) in
-            //            guard
-            //                let imageTemp = image,
-            //                let infoTemp = info,
-            //                infoTemp[PHImageErrorKey] == nil else {
-            //                completion(false,UIImage(), [:])
-            //                return
-            //            }
-            completion(true,image,info)
-        }
-    }
-
-    
     /// 获取图片
-    func requestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, contentMode: PHImageContentMode = .default, completion: @escaping WPFIPImageBlock) {
+    func requestImage(for asset: PHAsset, size: CGSize, resizeMode: PHImageRequestOptionsResizeMode = .fast, contentMode: PHImageContentMode = .default, completion: @escaping WPFIPImageBlock) -> PHImageRequestID {
         
         let options = PHImageRequestOptions()
         options.resizeMode = resizeMode
         
-        PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: contentMode, options: options) { (image, info) in
+        let id =  PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: contentMode, options: options) { (image, info) in
 //            guard
 //                let imageTemp = image,
 //                let infoTemp = info,
@@ -159,13 +141,14 @@ extension WPFIPManager {
 //            }
             completion(true,image,info)
         }
+        return id
     }
     
     /// 获取图片 二进制数据
-    func requestImageData(for asset: PHAsset, completion: @escaping WPFIPImageDataBlock) {
+    func requestImageData(for asset: PHAsset, completion: @escaping WPFIPImageDataBlock) -> PHImageRequestID {
         let options = PHImageRequestOptions()
         options.resizeMode = .fast
-        PHImageManager.default().requestImageData(for: asset, options: options) { (data, _, _, info) in
+        let id = PHImageManager.default().requestImageData(for: asset, options: options) { (data, _, _, info) in
             guard
                 let dataTemp = data,
                 let infoTemp = info,
@@ -175,35 +158,37 @@ extension WPFIPManager {
             }
             completion(true,dataTemp,info)
         }
-        
+        return id
     }
     
     /// 获取实况图片
-    func requestLivePhoto(for asset: PHAsset, completion: @escaping WPFIPLivePhotoBlock) {
+    func requestLivePhoto(for asset: PHAsset, completion: @escaping WPFIPLivePhotoBlock) -> PHImageRequestID {
         
         let options = PHLivePhotoRequestOptions()
         options.version = .current
         options.deliveryMode = .opportunistic
         
-        PHImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (livePhoto, info) in
+        let id = PHImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { (livePhoto, info) in
             guard let livePhotoTemp = livePhoto else {
                 completion(false, PHLivePhoto(), info)
                 return
             }
             completion(true, livePhotoTemp, info)
         }
+        return id
     }
     
     /// 获取视频
-    func requestVideo(for asset: PHAsset, completion: @escaping WPFIPVideoBlock) {
+    func requestVideo(for asset: PHAsset, completion: @escaping WPFIPVideoBlock) -> PHImageRequestID {
         let optiions = PHVideoRequestOptions()
-        PHImageManager.default().requestPlayerItem(forVideo: asset, options: optiions) { (item, info) in
+        let id = PHImageManager.default().requestPlayerItem(forVideo: asset, options: optiions) { (item, info) in
             guard let itemTemp = item else {
                 completion(false, item!, info)
                 return
             }
             completion(true, itemTemp, info)
         }
+        return id
     }
     
     
