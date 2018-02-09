@@ -10,7 +10,15 @@ import UIKit
 import Photos
 import PhotosUI
 
+/// Collection 之间的间隔
 private let kPreItemSpacing: CGFloat = 15
+/// 控件背景颜色
+private let kBarBackgroundColor: UIColor = UIColor(white: 0.08, alpha: 0.9)
+
+/// 返回时间 回调定义
+typealias WPFIPPreviewVCBackBlock = (_ vc: WPFIPPreviewVC) -> Void
+typealias WPFIPPreviewVCSelectBlock = (_ idx: Int) -> Int
+
 
 class WPFIPPreviewVC: WPFIPBaseVC {
     
@@ -19,11 +27,21 @@ class WPFIPPreviewVC: WPFIPBaseVC {
     /// 预览选中的照片
     let selectImages: [String]
     
-    var backBlock: WPFIPVoidBlock? = nil
+    /// 返回 按钮点击事件回调
+    var backBlock: WPFIPPreviewVCBackBlock? = nil
+    /// 原图 按钮点击事件回调
+    var fullImageBlock: WPFIPVoidBlock? = nil
+    /// 选择 按钮点击事件回调
+    var selectBlock: WPFIPPreviewVCSelectBlock? = nil
+    /// 发送 按钮点击事件回调
+    var sendBlock: WPFIPVoidBlock? = nil
+    
+    /// 是否已点击返回 针对返回动画过程中，cell会重新加载的问题
+    var isBacked: Bool = false
     
     let navigationView: UIView = {
         let nav = UIView()
-        nav.backgroundColor = UIColor(white: 0.145, alpha: 0.8)
+        nav.backgroundColor = kBarBackgroundColor
         return nav
     }()
     
@@ -43,10 +61,8 @@ class WPFIPPreviewVC: WPFIPBaseVC {
     let toolBar: UIToolbar = {
         let tb = UIToolbar()
         tb.tintColor = UIColor.white
-        tb.backgroundColor = UIColor(white: 0.145, alpha: 0.8)
-        //        tb.isTranslucent = false
+        tb.backgroundColor = kBarBackgroundColor
         tb.barStyle = .black
-        
         return tb
     }()
     
@@ -93,8 +109,9 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         
     }
     
+    /// 选择按钮
+    fileprivate let selectBtn = UIButton(type: .custom)
     func initNavigation() {
-        
         var height = UIApplication.shared.statusBarFrame.height
         if let tempHeight = self.navigationController?.navigationBar.height {
             height = height + tempHeight
@@ -102,15 +119,18 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         self.navigationView.frame = CGRect(x: 0, y: 0, width: UIScreen.screenW, height: height)
         self.view.addSubview(self.navigationView)
         
-        let back = UIButton(frame: CGRect(x: 8, y: height-42, width: 42, height: 42))
+        let back = UIButton(frame: CGRect(x: 8, y: (height-42)/2, width: 42, height: 42))
         back.setBackgroundImage(UIImage(named: "nav_back", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
         back.addTarget(self, action: #selector(self.backAction), for: .touchUpInside)
         self.navigationView.addSubview(back)
         
-        let select = UIButton(frame: CGRect(x: UIScreen.screenW-42-8, y: height-42, width: 42, height: 42))
-        select.setImage(UIImage(named: "nav_select", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
-        select.addTarget(self, action: #selector(self.selectAction), for: .touchUpInside)
-        self.navigationView.addSubview(select)
+        self.selectBtn.frame = CGRect(x: UIScreen.screenW-30-15, y: (height-30)/2, width: 30, height: 30)
+        self.selectBtn.setBackgroundImage(UIImage(named: "nav_select_normal", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
+        self.selectBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        self.selectBtn.setTitle("", for: .normal)
+        self.selectBtn.setBackgroundImage(UIImage(named: "nav_select_selected", in: Bundle.wpf(), compatibleWith: nil), for: .selected)
+        self.selectBtn.addTarget(self, action: #selector(self.selectAction), for: .touchUpInside)
+        self.navigationView.addSubview(selectBtn)
         
     }
     
@@ -162,28 +182,58 @@ class WPFIPPreviewVC: WPFIPBaseVC {
     }
 }
 
-//MAKR: - Private Methods
+//MARK: - Private Methods
 extension WPFIPPreviewVC {
+    /// 设置FullImageBtn状态
+    func setFullImageBtnState(_ isSelected: Bool) {
+        self.fullImageBtn.isSelected = isSelected
+    }
     /// 返回点击事件
     func backAction() {
+        self.isBacked = true
         if let block = self.backBlock {
-            block()
+            block(self)
         }
     }
     
     /// 新选中一个图片点击事件
     func selectAction() {
+        guard let block = self.selectBlock  else {
+            return
+        }
+        
+        let idx: Int = lroundf(Float(self.collectionView.contentOffset.x / (UIScreen.screenW + kPreItemSpacing)))
+        let result = block(idx)
+        if result != -1 {
+            
+            self.selectBtn.setTitle("\(result)", for: .selected)
+
+            let keyframe = CAKeyframeAnimation(keyPath: "transform.scale")
+            keyframe.duration = 0.4
+            keyframe.keyTimes = [0, 0.33, 0.66, 1]
+            keyframe.values = [0.75, 1.08, 0.92, 1]
+            self.selectBtn.layer.add(keyframe, forKey: "select_btn_transform")
+            self.selectBtn.isSelected = true
+        } else {
+            self.selectBtn.setTitle("", for: .selected)
+            self.selectBtn.isSelected = false
+        }
         
     }
     
     /// 原图点击事件
     func fullImageBtnClick(_ btn: UIButton) {
         btn.isSelected = !btn.isSelected
+        if let block = self.fullImageBlock {
+            block()
+        }
     }
     
     /// 发送按钮点击事件
     func sendBtnClick() {
-        
+        if let block = self.sendBlock {
+            block()
+        }
     }
     
     /// cell 点击
@@ -217,16 +267,17 @@ extension WPFIPPreviewVC: UICollectionViewDelegate, UICollectionViewDataSource {
             fatalError("unexpected cell in collection view")
         }
         
-        cell.resetStatus()
-        
         let model = WPFIPManager.manager.listModel.models[indexPath.row]
 
+        if self.isBacked == true {
+            return cell
+        }
+        
         cell.singleTapBlock = { [weak self] isHidden in
             self?.cellClick(isHidden)
         }
 
         cell.setValue(model, indexPath.row)
-        
         
         if self.selectIndex != -1 {
 //            cell.setValue(WPFIPManager.manager.assets!.object(at: indexPath.row), indexPath.row)
@@ -244,7 +295,6 @@ extension WPFIPPreviewVC: UICollectionViewDelegate, UICollectionViewDataSource {
         } else {
             self.fullImageBtn.isHidden = true
         }
-
     }
     
 }
