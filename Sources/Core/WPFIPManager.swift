@@ -11,7 +11,11 @@ import Foundation
 import Photos
 
 class WPFIPManager {
+    /// 数据源
     var listModel: WPFIPListModel = WPFIPListModel()
+    
+    /// 已经被选中的Cell
+    var selectedCell: [Int] = []
     
     static let manager = WPFIPManager()
 }

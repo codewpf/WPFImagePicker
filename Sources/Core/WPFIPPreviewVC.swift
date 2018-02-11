@@ -45,7 +45,9 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         return nav
     }()
     
+    /// 集合视图 单元标识
     let cellIdentifier = "wpf_ip_pre_vc_cell"
+    /// 集合视图
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = kPreItemSpacing
@@ -53,17 +55,32 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         layout.itemSize = CGSize(width: UIScreen.screenW, height: UIScreen.screenH)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.scrollDirection = .horizontal
-        let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        return cv
+        let _collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        return _collectionView
     }()
     
-    // tool bar
+    /// tool bar
     let toolBar: UIToolbar = {
-        let tb = UIToolbar()
-        tb.tintColor = UIColor.white
-        tb.backgroundColor = kBarBackgroundColor
-        tb.barStyle = .black
-        return tb
+        let _toolBar = UIToolbar()
+        _toolBar.tintColor = UIColor.white
+        _toolBar.backgroundColor = UIColor(white: 0.08, alpha: 0.7)
+        _toolBar.barStyle = .black
+        return _toolBar
+    }()
+    
+    /// 选中视图 单元标识
+    let selectedCellIdentifier = "wpf_ip_pre_vc_selected_cell"
+    /// selected View
+    let selectedView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 13
+        layout.minimumInteritemSpacing = 13
+        layout.itemSize = CGSize(width: 54, height: 54)
+        layout.sectionInset = UIEdgeInsets(top: 13, left: 13, bottom: 13, right: 13)
+        layout.scrollDirection = .horizontal
+        let _selectedView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        _selectedView.backgroundColor = kBarBackgroundColor
+        return _selectedView;
     }()
     
     
@@ -97,6 +114,9 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         
         // toolbar
         self.initToolBar()
+        
+        // selected view
+        self.initSelectedView()
     }
     
     override func viewDidLayoutSubviews() {
@@ -110,7 +130,7 @@ class WPFIPPreviewVC: WPFIPBaseVC {
     }
     
     /// 选择按钮
-    fileprivate let selectBtn = UIButton(type: .custom)
+    fileprivate let selectBtn = WPFIPPreviewSelectButton(type: .custom)
     func initNavigation() {
         var height = UIApplication.shared.statusBarFrame.height
         if let tempHeight = self.navigationController?.navigationBar.height {
@@ -124,11 +144,10 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         back.addTarget(self, action: #selector(self.backAction), for: .touchUpInside)
         self.navigationView.addSubview(back)
         
-        self.selectBtn.frame = CGRect(x: UIScreen.screenW-30-15, y: (height-30)/2, width: 30, height: 30)
-        self.selectBtn.setBackgroundImage(UIImage(named: "nav_select_normal", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
-        self.selectBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        self.selectBtn.setTitle("", for: .normal)
-        self.selectBtn.setBackgroundImage(UIImage(named: "nav_select_selected", in: Bundle.wpf(), compatibleWith: nil), for: .selected)
+        self.selectBtn.frame = CGRect(x: UIScreen.screenW-42-8, y: (height-42)/2, width: 42, height: 42)
+        self.selectBtn.setImage(UIImage(named: "nav_select_normal", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
+        self.selectBtn.idxLabel.text = ""
+        self.selectBtn.setImage(UIImage(named: "nav_select_selected", in: Bundle.wpf(), compatibleWith: nil), for: .selected)
         self.selectBtn.addTarget(self, action: #selector(self.selectAction), for: .touchUpInside)
         self.navigationView.addSubview(selectBtn)
         
@@ -176,6 +195,19 @@ class WPFIPPreviewVC: WPFIPBaseVC {
         
     }
     
+    func initSelectedView() {
+        
+        self.selectedView.frame = CGRect(x: 0, y: UIScreen.screenH-self.contentToolBarHeight()-self.contentInsetBottom()-80, width: UIScreen.screenW, height: 80)
+        self.selectedView.register(WPFIPPreviewSelectedCell.self, forCellWithReuseIdentifier: self.selectedCellIdentifier)
+        self.selectedView.delegate = self
+        self.selectedView.dataSource = self
+        self.view.addSubview(self.selectedView)
+        
+        let line = UIView(frame: CGRect(x: 0, y: 79.5, width: UIScreen.screenW, height: 0.5))
+        line.backgroundColor = UIColor(white: 0.21, alpha: 1)
+        self.selectedView.addSubview(line)
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -206,8 +238,7 @@ extension WPFIPPreviewVC {
         let result = block(idx)
         if result != -1 {
             
-            self.selectBtn.setTitle("\(result)", for: .selected)
-
+            self.selectBtn.idxLabel.text = "\(result)"
             let keyframe = CAKeyframeAnimation(keyPath: "transform.scale")
             keyframe.duration = 0.4
             keyframe.keyTimes = [0, 0.33, 0.66, 1]
@@ -215,10 +246,11 @@ extension WPFIPPreviewVC {
             self.selectBtn.layer.add(keyframe, forKey: "select_btn_transform")
             self.selectBtn.isSelected = true
         } else {
-            self.selectBtn.setTitle("", for: .selected)
+            self.selectBtn.idxLabel.text = ""
             self.selectBtn.isSelected = false
         }
         
+        self.selectedView.reloadData()
     }
     
     /// 原图点击事件
@@ -243,9 +275,11 @@ extension WPFIPPreviewVC {
             
             self.navigationView.isHidden = temp
             self.toolBar.isHidden = temp
+            self.selectedView.isHidden = temp
         } else {
             self.navigationView.isHidden = !self.navigationView.isHidden
             self.toolBar.isHidden = !self.toolBar.isHidden
+            self.selectedView.isHidden = !self.selectedView.isHidden
         }
     }
     
@@ -255,45 +289,83 @@ extension WPFIPPreviewVC {
 //MARK: - Delegate
 extension WPFIPPreviewVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.selectIndex != -1 {
-            return WPFIPManager.manager.listModel.count
+        if collectionView == self.collectionView {
+            if self.selectIndex != -1 {
+                return WPFIPManager.manager.listModel.count
+            } else {
+                return self.selectImages.count
+            }
         } else {
-            return self.selectImages.count
+            return WPFIPManager.manager.selectedCell.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell: WPFIPPreviewCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdentifier, for: indexPath) as? WPFIPPreviewCell else {
-            fatalError("unexpected cell in collection view")
-        }
-        
-        let model = WPFIPManager.manager.listModel.models[indexPath.row]
-
-        if self.isBacked == true {
+        if collectionView == self.collectionView {
+            guard let cell: WPFIPPreviewCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdentifier, for: indexPath) as? WPFIPPreviewCell else {
+                fatalError("unexpected preview cell in collection view")
+            }
+            
+            let model = WPFIPManager.manager.listModel.models[indexPath.row]
+            
+            if self.isBacked == true {
+                return cell
+            }
+            
+            cell.singleTapBlock = { [weak self] isHidden in
+                self?.cellClick(isHidden)
+            }
+            
+            cell.setValue(model, indexPath.row)
+            
+            if self.selectIndex != -1 {
+                //            cell.setValue(WPFIPManager.manager.assets!.object(at: indexPath.row), indexPath.row)
+            } else {
+                
+            }
+            return cell
+        } else {
+            guard let cell: WPFIPPreviewSelectedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.selectedCellIdentifier, for: indexPath) as? WPFIPPreviewSelectedCell else {
+                fatalError("unexpected preview cell in collection view")
+            }
+            
+            let idx = WPFIPManager.manager.selectedCell[indexPath.row]
+            let model = WPFIPManager.manager.listModel.models[idx]
+            
+            cell.setValue(model)
+            
             return cell
         }
-        
-        cell.singleTapBlock = { [weak self] isHidden in
-            self?.cellClick(isHidden)
-        }
-
-        cell.setValue(model, indexPath.row)
-        
-        if self.selectIndex != -1 {
-//            cell.setValue(WPFIPManager.manager.assets!.object(at: indexPath.row), indexPath.row)
-        } else {
-            
-        }
-        return cell
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let idx: Int = lroundf(Float(scrollView.contentOffset.x / (UIScreen.screenW + kPreItemSpacing)))
-        let model: WPFIPModel = WPFIPManager.manager.listModel.models[idx]
-        if model.type == .image {
-            self.fullImageBtn.isHidden = false
+        if scrollView == self.collectionView {
+            let idx: Int = lroundf(Float(scrollView.contentOffset.x / (UIScreen.screenW + kPreItemSpacing)))
+            
+            // 控制 原图 按钮是否显示
+            let model: WPFIPModel = WPFIPManager.manager.listModel.models[idx]
+            if model.type == .image {
+                self.fullImageBtn.isHidden = false
+            } else {
+                self.fullImageBtn.isHidden = true
+            }
+            
+            // 控制 选中 按钮选择顺序
+            if let seletIdx = WPFIPManager.manager.selectedCell.index(of: idx) {
+                self.selectBtn.idxLabel.text = "\(seletIdx + 1)"
+                self.selectBtn.isSelected = true
+            } else {
+                self.selectBtn.idxLabel.text = ""
+                self.selectBtn.isSelected = false
+            }
+            
+            
+            
+            // 控制 已选中列表中的高亮
         } else {
-            self.fullImageBtn.isHidden = true
+            
+            
+            
         }
     }
     
@@ -474,7 +546,7 @@ protocol WPFIPPreviewType: NSObjectProtocol {
 }
 
 /// 最大缩放比例
-private let kMaximumZoomScale: CGFloat = 6.0
+private let kMaximumZoomScale: CGFloat = 4.0
 /// 最小缩放比例
 private let kMinimumZoomScale: CGFloat = 1.0
 /// ImageView
@@ -554,7 +626,7 @@ class WPFIPPreviewImageView: UIView, WPFIPPreviewType, UIScrollViewDelegate {
     @objc func doubleGesTap(_ tap: UITapGestureRecognizer) {
         var scale: CGFloat = 1.0
         if self.scrollView.zoomScale != kMaximumZoomScale {
-            scale = kMaximumZoomScale
+            scale = kMaximumZoomScale / 2
         } else {
             scale = kMinimumZoomScale
         }
@@ -843,7 +915,11 @@ class WPFIPPreviewVideoView: UIView, WPFIPPreviewType {
     /// 播放时 手指点击
     func singleGesTap() {
         if let block = self.singleGesTabBlock {
-            block(0)
+            if self.playBtn.isHidden == true {
+                block(0)
+            } else {
+                block(1)
+            }
         }
         self.playAction()
     }
@@ -901,75 +977,67 @@ class WPFIPPreviewVideoView: UIView, WPFIPPreviewType {
 }
 
 
-/*
- 
- 
- 1、预览已选中图片 点击预览按钮，并且从第一张开始，按选中顺序排列
- 
- 2、预览全部图片 预览全部 跳转到选中的按钮位置
-    点击 进入预览
-    长按 ForceTouch 进入预览
- 
- 
- 
- 
- image 展示
- lviePhoto 不能播放
- gif 自动播放
- video 点击播放
- 
- 
- 
- */
 
+class WPFIPPreviewSelectButton: UIButton {
+    
+    let idxLabel: UILabel
+    
+    override init(frame: CGRect) {
+        self.idxLabel = UILabel()
+        super.init(frame: frame)
+        
+        self.idxLabel.font = UIFont.systemFont(ofSize: 16)
+        self.idxLabel.textColor = UIColor.white
+        self.idxLabel.textAlignment = .center
+        self.addSubview(self.idxLabel)
+    }
+    
+    override var frame: CGRect {
+        get {
+            return super.frame
+        }
+        set {
+            super.frame = newValue
+            self.idxLabel.frame = CGRect(origin: CGPoint.zero, size: frame.size)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
-
-/*
- protocol
- 1、默认展示图
- 2、指示图
- 
- 1、加载默认图
- 2、单点 事件
- 
-gif
- 1、默认展示图片   不播放
- 2、缩放视图
- 3、内容视图
- 4、gif          默认模仿
- 5、指示视图
- 
- 1、加载默认图    不播放
- 2、加载gif      默认播放
- 3、暂停播放
- 4、重新播放
- 5、重设比例
- 5、双击放大
- 
- 
-livephoto
- 1、默认展示图片   不播放
- 2、lp           默认播放时
- 3、指示视图
- 
- 1、加载默认图
- 2、加载lp图片
- 3、默认播放
- 
-video
- 1、默认展示图片
- 2、播放layer
- 3、指示视图
- 
- 1、加载视频图片
- 2、单点 开始/暂停 视频播放
- 3、播放完成
- 4、暂停播放
- 
- 
- */
-
-
+class WPFIPPreviewSelectedCell: UICollectionViewCell {
+    let imageView: UIImageView
+    
+    override init(frame: CGRect) {
+        self.imageView = UIImageView()
+        super.init(frame: frame)
+        
+        self.imageView.frame = self.contentView.bounds
+        self.imageView.contentMode = .scaleAspectFill
+        self.imageView.clipsToBounds = true
+        self.contentView.addSubview(self.imageView)
+        
+        
+    }
+    
+    func setValue(_ model: WPFIPModel) {
+        let width = 54 * UIScreen.main.scale * 2
+        DispatchQueue.global().async {
+            _ = WPFIPManager.manager.requestImage(for: model.asset, size: CGSize(width: width, height: width)) { (restult, image, _) in
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            }
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
 
 
 

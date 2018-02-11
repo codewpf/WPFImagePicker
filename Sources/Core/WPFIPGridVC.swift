@@ -180,24 +180,24 @@ extension WPFIPGridVC {
         if isSelected == true {
             cell.updateBtn(selectIndex: 0, newState: !isSelected)
             
-            self.selectedCell.remove(object: cell.row)
+            WPFIPManager.manager.selectedCell.remove(object: cell.row)
         } else {
             // 判断当前的数量是否已经满额
-            guard self.selectedCell.count < WPFImagePicker.imagePicker.conf.maxSelect else {
+            guard WPFIPManager.manager.selectedCell.count < WPFImagePicker.imagePicker.conf.maxSelect else {
                 self.showMaximumAlert()
                 return
             }
-            cell.updateBtn(selectIndex: self.selectedCell.count, newState: !isSelected, animate: true)
+            cell.updateBtn(selectIndex: WPFIPManager.manager.selectedCell.count, newState: !isSelected, animate: true)
             
             // 添加进数组
-            self.selectedCell.append(cell.row)
+            WPFIPManager.manager.selectedCell.append(cell.row)
         }
         
-        if self.selectedCell.count > 0 {
+        if WPFIPManager.manager.selectedCell.count > 0 {
             self.previewBtn.isEnabled = true
             
             self.sendBtn.isEnabled = true
-            self.sendBtn.setTitle("\(Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerGridVCSendBbiTitle))(\(self.selectedCell.count))", for: .normal)
+            self.sendBtn.setTitle("\(Bundle.localizeString(forkey: WPFIPConstants.keys.imagePickerGridVCSendBbiTitle))(\(WPFIPManager.manager.selectedCell.count))", for: .normal)
         } else {
             self.previewBtn.isEnabled = false
             
@@ -209,8 +209,8 @@ extension WPFIPGridVC {
         self.updateSelectedItem()
         
         // 两个临界点 刷新Collection item coverView 的状态
-        if self.selectedCell.count == WPFImagePicker.imagePicker.conf.maxSelect ||
-            self.selectedCell.count == WPFImagePicker.imagePicker.conf.maxSelect - 1 {
+        if WPFIPManager.manager.selectedCell.count == WPFImagePicker.imagePicker.conf.maxSelect ||
+            WPFIPManager.manager.selectedCell.count == WPFImagePicker.imagePicker.conf.maxSelect - 1 {
             for cell in self.collectionView.visibleCells {
                 if let grid = cell as? WPFIPGridCell {
                     grid.updateCoverState(self.canClick(grid.row))
@@ -283,8 +283,8 @@ extension WPFIPGridVC {
     /// 当前cell 是否能点击
     func canClick(_ row: Int) -> Bool {
         var state = false
-        state = self.selectedCell.count < 9
-        if self.selectedCell.contains(row) {
+        state = WPFIPManager.manager.selectedCell.count < 9
+        if WPFIPManager.manager.selectedCell.contains(row) {
             state = true
         }
         return state
@@ -293,7 +293,7 @@ extension WPFIPGridVC {
     // ------ 公共事件
     /// 选择item有变化，刷新选择item
     func updateSelectedItem() {
-        for (idx, value) in self.selectedCell.enumerated() {
+        for (idx, value) in WPFIPManager.manager.selectedCell.enumerated() {
             let indexPath = IndexPath(item: value, section: 0)
             if let cell = self.collectionView.cellForItem(at: indexPath) as? WPFIPGridCell {
                 cell.updateBtn(selectIndex: idx+1, newState: true, animate: false)
@@ -314,7 +314,7 @@ extension WPFIPGridVC {
     }
     /// 预览界面 选择 按钮点击
     func previewSelectClick(_ idx: Int) -> Int {
-        guard self.selectedCell.count < WPFIPConfiguration.default.maxSelect else {
+        guard WPFIPManager.manager.selectedCell.count < WPFIPConfiguration.default.maxSelect else {
             return -1
         }
         
@@ -328,7 +328,7 @@ extension WPFIPGridVC {
 
         /// cell 状态改变之后的判断
         if cell.selectBtn.isSelected == true {
-            return self.selectedCell.count
+            return WPFIPManager.manager.selectedCell.count
         } else {
             return -1
         }
@@ -370,7 +370,7 @@ extension WPFIPGridVC: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         /// 设置选择状态
-        if let idx = self.selectedCell.index(of: indexPath.row) {
+        if let idx = WPFIPManager.manager.selectedCell.index(of: indexPath.row) {
             cell.updateBtn(selectIndex: idx+1, newState: true, animate: false)
         }
         
