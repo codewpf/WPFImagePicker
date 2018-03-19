@@ -57,4 +57,19 @@ struct WPFIPConstants {
         let imagePickerMAXSlectedAlertBtnTitle = "WPFImagePickerMAXSlectedAlertBtnTitle"
     }
     static let keys: ConstantKeys = ConstantKeys()
+    
+    /// Color
+    struct WPFIPColor {
+        let themeGreen: UIColor = UIColor(iHex: 0x2FA932)
+    }
+    static let colors: WPFIPColor = WPFIPColor()
+
 }
+
+
+
+
+
+
+
+

@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     func btnClick() {
         var conf = WPFIPConfiguration.default
         conf.languge = .simplified
+        conf.autoPlayLivePhoto = false
         conf.autoPlayGif = true
         WPFImagePicker.imagePicker.conf = conf
         WPFImagePicker.imagePicker.start(withPresenting: self)
@@ -51,9 +52,9 @@ class ViewController: UIViewController {
     }
     
     func saveImage() {
-        for _ in 0 ..< 100 {
+        for _ in 0 ..< 10 {
             let color: UIColor = UIColor(r: CGFloat(Int(arc4random())%255), g: CGFloat(Int(arc4random())%255), b: CGFloat(Int(arc4random())%255))
-            let image: UIImage = UIImage.image(withColor: color)
+            let image: UIImage = UIImage.image(withColor: color, CGRect(x: 0, y: 0, width: 500, height: 500))
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.doneSave(image:didFinishSavingWithError:contextInfo:)), nil)
         }
     }
