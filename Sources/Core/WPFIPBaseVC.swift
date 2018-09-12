@@ -65,9 +65,9 @@ extension WPFIPBaseVC {
     /// 导航设置
     func navSetting(_ nav: UINavigationBar?) {
         if let nnn = nav {
-            let height = UIApplication.shared.statusBarFrame.height + nnn.height
+            let height = UIApplication.shared.statusBarFrame.height + nnn.kHeight
             let image2 = UIImage.image(withColor: UIColor(r: 43, g: 47, b: 51, a: 94), CGRect(x: 0, y: 0, width: 2, height: height))
-            nnn.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+            nnn.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
             nnn.tintColor = UIColor.white
             nnn.setBackgroundImage(image2, for: .default)
             nnn.shadowImage = UIImage()
@@ -92,7 +92,7 @@ extension WPFIPBaseVC {
             let edge = self.view.safeAreaInsets
             return edge.top
         } else {
-            return (self.navigationController?.navigationBar.height ?? 44) + UIApplication.shared.statusBarFrame.height
+            return (self.navigationController?.navigationBar.kHeight ?? 44) + UIApplication.shared.statusBarFrame.height
         }
     }
     

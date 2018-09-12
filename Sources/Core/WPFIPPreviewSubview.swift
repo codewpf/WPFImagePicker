@@ -275,8 +275,8 @@ class WPFIPPreviewImageView: UIView, WPFIPPreviewType, UIScrollViewDelegate {
     
     func zoomRect(for scale: CGFloat, with center: CGPoint) -> CGRect {
         var rect: CGRect = CGRect()
-        rect.size.height = self.scrollView.height / scale
-        rect.size.width = self.scrollView.width / scale
+        rect.size.height = self.scrollView.kHeight / scale
+        rect.size.width = self.scrollView.kWidth / scale
         rect.origin.x = center.x - rect.size.width / 2
         rect.origin.y = center.y - rect.size.height / 2
         return rect
@@ -342,13 +342,13 @@ class WPFIPPreviewImageView: UIView, WPFIPPreviewType, UIScrollViewDelegate {
         if let image = self.imageView.image {
             imageScale = image.size.height / image.size.width
         }
-        let screenScale = self.height / UIScreen.screenW
+        let screenScale = self.kHeight / UIScreen.screenW
         if imageScale > screenScale {
             frame.size.height = CGFloat(floor(Double(width * imageScale)))
         } else {
             var height = CGFloat(floor(Double(width * imageScale)))
             if height < 1 || height.isNaN {
-                height = self.height
+                height = self.kHeight
             }
             frame.size.height = height
         }
@@ -356,11 +356,11 @@ class WPFIPPreviewImageView: UIView, WPFIPPreviewType, UIScrollViewDelegate {
         self.containView.frame = frame
         
         
-        let contentSize: CGSize = CGSize(width: width, height: max(self.height, frame.size.height))
-        if frame.size.height < self.height {
-            self.containView.center = CGPoint(x: self.width/2, y: self.height/2)
+        let contentSize: CGSize = CGSize(width: width, height: max(self.kHeight, frame.size.height))
+        if frame.size.height < self.kHeight {
+            self.containView.center = CGPoint(x: self.kWidth/2, y: self.kHeight/2)
         } else {
-            self.containView.frame = CGRect(origin: CGPoint(x: (self.width-frame.size.width)/2, y: 0), size: frame.size)
+            self.containView.frame = CGRect(origin: CGPoint(x: (self.kWidth-frame.size.width)/2, y: 0), size: frame.size)
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -400,8 +400,8 @@ class WPFIPPreviewImageView: UIView, WPFIPPreviewType, UIScrollViewDelegate {
     /// UIScrollViewDelegate
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         self.zoomScale = scrollView.zoomScale
-        let offsetX = (scrollView.width > scrollView.contentSize.width) ? (scrollView.width - scrollView.contentSize.width) / 2 : 0.0
-        let offsetY = (scrollView.height > scrollView.contentSize.height) ? (scrollView.height - scrollView.contentSize.height) / 2 : 0.0
+        let offsetX = (scrollView.kWidth > scrollView.contentSize.width) ? (scrollView.kWidth - scrollView.contentSize.width) / 2 : 0.0
+        let offsetY = (scrollView.kHeight > scrollView.contentSize.height) ? (scrollView.kHeight - scrollView.contentSize.height) / 2 : 0.0
         self.containView.center = CGPoint(x: scrollView.contentSize.width / 2 + offsetX, y: scrollView.contentSize.height / 2 + offsetY)
     }
     
@@ -547,7 +547,7 @@ class WPFIPPreviewVideoView: UIView, WPFIPPreviewType {
     }
     
     /// 暂停时 播放按钮点击
-    func playBtnClick() {
+    @objc func playBtnClick() {
         if let block = self.singleGesTabBlock {
             block(1)
         }
@@ -555,7 +555,7 @@ class WPFIPPreviewVideoView: UIView, WPFIPPreviewType {
     }
     
     /// 播放时 手指点击
-    func singleGesTap() {
+    @objc func singleGesTap() {
         if let block = self.singleGesTabBlock {
             if self.playBtn.isHidden == true {
                 block(0)

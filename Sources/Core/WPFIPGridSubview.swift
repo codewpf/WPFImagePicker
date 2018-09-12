@@ -51,7 +51,7 @@ class WPFIPGridCell: UICollectionViewCell {
         coverView.backgroundColor = UIColor(white: 1, alpha: 0.7)
         self.contentView.addSubview(coverView)
         
-        selectBtn.frame = CGRect(x: imageView.width-27, y: 0, width: 27, height: 27)
+        selectBtn.frame = CGRect(x: imageView.kWidth-27, y: 0, width: 27, height: 27)
         selectBtn.setBackgroundImage(UIImage(named: "btn_image_normal", in: Bundle.wpf(), compatibleWith: nil), for: .normal)
         selectBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         selectBtn.setTitle("", for: .normal)
@@ -109,7 +109,7 @@ class WPFIPGridCell: UICollectionViewCell {
     
     
     // 选择 点击
-    func selectBtnClick(_ btn: UIButton) {
+    @objc func selectBtnClick(_ btn: UIButton) {
         guard let block = self.cellSelectBlock else {
             fatalError("the cell does not have the block of select action")
         }
@@ -118,7 +118,7 @@ class WPFIPGridCell: UICollectionViewCell {
     
     
     // 预览 点击
-    func tapClick() {
+    @objc func tapClick() {
         guard let block = self.tapBlock else {
             fatalError("the cell does not have the block of tap")
         }

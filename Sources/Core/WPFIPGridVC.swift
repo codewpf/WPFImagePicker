@@ -151,16 +151,16 @@ class WPFIPGridVC: WPFIPBaseVC {
 extension WPFIPGridVC {
     // ------ 导航事件
     /// 取消选择图片
-    func cancelBtnClick() {
+    @objc func cancelBtnClick() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
     // ------ 工具栏事件
     /// 预览已选择图片
-    func preSelectImage() {
+    @objc func preSelectImage() {
         
     }
     /// 使用原图
-    func fullImageBtnClick(_ btn: UIButton) {
+    @objc func fullImageBtnClick(_ btn: UIButton) {
         btn.isSelected = !btn.isSelected
     }
     /// 确定选择
@@ -268,8 +268,8 @@ extension WPFIPGridVC {
         }
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
-            self.contentView.leading = currentLeading
-            vc.view.leading = leading
+            self.contentView.kLeft = currentLeading
+            vc.view.kLeft = leading
         }) { (_) in
             if state == false {
                 vc.willMove(toParentViewController: nil)

@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     }
 
     
-    func btnClick() {
+    @objc func btnClick() {
         var conf = WPFIPConfiguration.default
         conf.languge = .simplified
         conf.autoPlayLivePhoto = false
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
 
     var tempa = 0
     var tempb = 0
-    func doneSave(image: UIImage, didFinishSavingWithError error: Error?, contextInfo: AnyObject?) {
+    @objc func doneSave(image: UIImage, didFinishSavingWithError error: Error?, contextInfo: AnyObject?) {
         
         if error != nil {
             print("done --- \(tempa)")

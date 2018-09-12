@@ -48,7 +48,7 @@ public class WPFIPListVC: WPFIPBaseVC {
 }
 
 extension WPFIPListVC {
-    func cancelButtionClick() {
+    @objc func cancelButtionClick() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }

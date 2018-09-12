@@ -4,7 +4,8 @@
 //
 //  Created by alex on 2017/7/8.
 //
-//  version 0.3.3
+//  old version 0.3.5
+//  new version 0.4.0
 
 import Foundation
 import UIKit
@@ -13,8 +14,8 @@ import UIKit
 public func WPFLog<T>(_ message: T, fileName: String = #file, methodName: String =  #function, lineNumber: Int = #line)
 {
     #if DEBUG
-        let str : String = (fileName as NSString).pathComponents.last!.replacingOccurrences(of: "swift", with: "");
-        print("\(Date()) \(str)\(methodName) [\(lineNumber) line] ---------->\n\(message)")
+    let str : String = (fileName as NSString).pathComponents.last!.replacingOccurrences(of: "swift", with: "");
+    print("\(Date()) \(str)\(methodName) [\(lineNumber) line] ---------->\n\(message)")
     #endif
 }
 
@@ -22,14 +23,14 @@ public func WPFLog<T>(_ message: T, fileName: String = #file, methodName: String
 public extension NSObject {
     
     class func swapMethod(originSel: Selector, swapSel: Selector) {
-        let originMet: Method = class_getInstanceMethod(self, originSel)
-        let swapMet: Method = class_getInstanceMethod(self, swapSel)
-        
-        let added = class_addMethod(self, originSel, method_getImplementation(swapMet), method_getTypeEncoding(swapMet))
-        if added == true {
-            class_replaceMethod(self, swapSel, method_getImplementation(originMet), method_getTypeEncoding(originMet))
-        } else {
-            method_exchangeImplementations(originMet, swapMet)
+        if let originMet: Method = class_getInstanceMethod(self, originSel),
+            let swapMet: Method = class_getInstanceMethod(self, swapSel) {
+            let added = class_addMethod(self, originSel, method_getImplementation(swapMet), method_getTypeEncoding(swapMet))
+            if added == true {
+                class_replaceMethod(self, swapSel, method_getImplementation(originMet), method_getTypeEncoding(originMet))
+            } else {
+                method_exchangeImplementations(originMet, swapMet)
+            }
         }
     }
     
@@ -41,9 +42,8 @@ public extension NSObject {
         var mutabList: [String] = []
         for i in 0 ..< count {
             let method = methodList[Int(i)]
-            if let sel = method_getName(method) {
-                mutabList.append(NSStringFromSelector(sel))
-            }
+            mutabList.append(NSStringFromSelector(method_getName(method)))
+            
         }
         return mutabList
     }
@@ -55,8 +55,7 @@ public extension NSObject {
         }
         var mutabList: [String] = []
         for i in 0 ..< count {
-            if let name = property_getName(propertyList[Int(i)]),
-                let nstr = NSString.init(utf8String: name) {
+            if let nstr = NSString.init(utf8String: property_getName(propertyList[Int(i)])) {
                 mutabList.append("\(nstr)")
             }
         }
@@ -77,7 +76,7 @@ public extension Array where Element: Equatable {
 //MARK: -
 public extension String {
     
-    /// 字符串长度p
+    /// 字符串长度
     var length: Int {
         return self.count
     }
@@ -106,11 +105,11 @@ public extension String {
     /// 截取字符串 from
     /// - Parameter from: 开始位置
     func substring(from: UInt) -> String {
-        
         guard self.length > Int(from) else {
             return ""
         }
-        return self.substring(from: self.index(self.startIndex, offsetBy:String.IndexDistance(from)))
+        let idxStart = self.index(self.startIndex, offsetBy: Int(from))
+        return String(self[idxStart...])
     }
     /// 截取字符串 to
     /// - Parameter to: 结束为止
@@ -118,17 +117,18 @@ public extension String {
         guard self.length >= Int(to) else {
             return self
         }
-        return self.substring(to: self.index(self.startIndex, offsetBy:String.IndexDistance(to)))
+        let offsetBy: Int = Int(to) - self.length
+        let idxEnd = self.index(self.endIndex, offsetBy: offsetBy)
+        return String(self[self.startIndex ..< idxEnd ])
     }
-    
     /// 截取字符串 Range
     /// - Parameter range: 截取的区间
     func substring(range: NSRange) -> String {
         
-        if let r = range.toRange() {
+        if let r = Range.init(range) {
             let start = self.index(self.startIndex, offsetBy: r.lowerBound)
             let end = self.index(self.startIndex, offsetBy: r.upperBound)
-            return self.substring(with: Range(start..<end))
+            return String(self[start..<end])
         }
         return self
     }
@@ -136,7 +136,8 @@ public extension String {
     /// 替换字符串
     mutating func replace(range: NSRange, place: String = "****") {
         
-        if let r = range.toRange() {
+        
+        if let r = Range.init(range) {
             let start = self.index(self.startIndex, offsetBy: r.lowerBound)
             let end = self.index(self.startIndex, offsetBy: r.upperBound)
             let range = Range(start..<end)
@@ -164,7 +165,8 @@ public extension UIColor {
         var str: String = sHex.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
         
         if str.hasPrefix("#") {
-            str = str.substring(from: str.index(str.startIndex, offsetBy: 1))
+            let sIndex = str.index(str.startIndex, offsetBy: 1)
+            str = String(str[sIndex..<str.endIndex])
         }
         
         var r:CUnsignedInt = 255
@@ -349,13 +351,13 @@ public extension Bundle {
 }
 //MARK: -
 public extension UINavigationBar {
-    public class func initializeNavigationBarOneMethod() {
+    public class func initializeOneMethod() {
         DispatchQueue.once(token: "Update_UINavigationBar_Layout_Margin") {
             self.swapMethod(originSel: #selector(layoutSubviews), swapSel: #selector(wpfLayoutSubviews))
         }
     }
     
-    func wpfLayoutSubviews() {
+    @objc func wpfLayoutSubviews() {
         self.wpfLayoutSubviews()
         
         // Solve the problem that left margin is too wide
@@ -376,7 +378,7 @@ public extension UINavigationBar {
 
 //MARK: -
 public extension UIView {
-    var width: CGFloat {
+    var kWidth: CGFloat {
         get {
             return frame.size.width
         }
@@ -385,7 +387,7 @@ public extension UIView {
         }
     }
     
-    var height: CGFloat {
+    var kHeight: CGFloat {
         get {
             return frame.size.height
         }
@@ -394,7 +396,7 @@ public extension UIView {
         }
     }
     
-    var leading: CGFloat {
+    var kLeft: CGFloat {
         get {
             return frame.origin.x
         }
@@ -403,7 +405,7 @@ public extension UIView {
         }
     }
     
-    var trailing: CGFloat {
+    var kRight: CGFloat {
         get {
             return frame.origin.x + frame.size.width
         }
@@ -412,7 +414,7 @@ public extension UIView {
         }
     }
     
-    var top: CGFloat {
+    var kTop: CGFloat {
         get {
             return frame.origin.y
         }
@@ -421,7 +423,7 @@ public extension UIView {
         }
     }
     
-    var bottom: CGFloat {
+    var kBottom: CGFloat {
         get {
             return frame.origin.y + frame.size.height
         }
@@ -430,11 +432,11 @@ public extension UIView {
         }
     }
     
-    var size: CGSize {
+    var kSize: CGSize {
         return frame.size
     }
     
-    var origin: CGPoint {
+    var kOrigin: CGPoint {
         return frame.origin
     }
     
@@ -442,7 +444,7 @@ public extension UIView {
 
 //MARK: -
 public extension CGRect {
-    var leading: CGFloat {
+    var kLeft: CGFloat {
         get {
             return origin.x
         }
@@ -451,7 +453,7 @@ public extension CGRect {
         }
     }
     
-    var trailing: CGFloat {
+    var kRight: CGFloat {
         get {
             return origin.x + size.width
         }
@@ -460,7 +462,7 @@ public extension CGRect {
         }
     }
     
-    var top: CGFloat {
+    var kTop: CGFloat {
         get {
             return origin.y
         }
@@ -469,7 +471,7 @@ public extension CGRect {
         }
     }
     
-    var bottom: CGFloat {
+    var kBottom: CGFloat {
         get {
             return origin.y + size.height
         }
@@ -697,8 +699,8 @@ func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
         return bytes
     }
     
-    valuePointer.deinitialize()
-    valuePointer.deallocate(capacity: 1)
+    valuePointer.deinitialize(count: 1)
+    valuePointer.deallocate()
     
     return bytes
 }

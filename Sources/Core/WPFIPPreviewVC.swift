@@ -140,7 +140,7 @@ class WPFIPPreviewVC: WPFIPBaseVC {
     fileprivate let selectBtn = WPFIPPreviewSelectButton(type: .custom)
     func initNavigation() {
         var height = UIApplication.shared.statusBarFrame.height
-        if let tempHeight = self.navigationController?.navigationBar.height {
+        if let tempHeight = self.navigationController?.navigationBar.kHeight {
             height = height + tempHeight
         }
         self.navigationView.frame = CGRect(x: 0, y: 0, width: UIScreen.screenW, height: height)
@@ -228,7 +228,7 @@ extension WPFIPPreviewVC {
         self.fullImageBtn.isSelected = isSelected
     }
     /// 返回点击事件
-    func backAction() {
+    @objc func backAction() {
         self.isBacked = true
         if let block = self.backBlock {
             block(self)
@@ -236,7 +236,7 @@ extension WPFIPPreviewVC {
     }
     
     /// 新选中一个图片点击事件
-    func selectAction() {
+    @objc func selectAction() {
         guard let block = self.selectBlock  else {
             return
         }
@@ -267,7 +267,7 @@ extension WPFIPPreviewVC {
     }
     
     /// 原图点击事件
-    func fullImageBtnClick(_ btn: UIButton) {
+    @objc func fullImageBtnClick(_ btn: UIButton) {
         btn.isSelected = !btn.isSelected
         if let block = self.fullImageBlock {
             block()

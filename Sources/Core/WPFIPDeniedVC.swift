@@ -38,7 +38,7 @@ class WPFIPDeniedVC: WPFIPBaseVC {
 
 
 extension WPFIPDeniedVC {
-    func cancelButtionClick() {
+    @objc func cancelButtionClick() {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }

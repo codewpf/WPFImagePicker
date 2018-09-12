@@ -32,7 +32,7 @@ class WPFIPListCell: UITableViewCell {
     func setValue(_ listModel: WPFIPListModel) {
         
         if let model = listModel.thumbAsset {
-            PHImageManager.default().requestImage(for: model.asset, targetSize: CGSize(width: self.height*2, height: self.height*2), contentMode: .default, options: nil) { (image, _) in
+            PHImageManager.default().requestImage(for: model.asset, targetSize: CGSize(width: self.kHeight*2, height: self.kHeight*2), contentMode: .default, options: nil) { (image, _) in
                 self.ipImageView.image = image
             }
         } else {
@@ -50,8 +50,8 @@ class WPFIPListCell: UITableViewCell {
         assert(self.countLabel.text != nil, "Please set value firstly")
         
         self.ipImageView.frame = CGRect(x: 0, y: 0, width: height, height: height)
-        self.titleLabel.frame = CGRect(origin: CGPoint(x: self.ipImageView.trailing + 3, y: (height-self.titleLabel.height)/2), size: self.titleLabel.size)
-        self.countLabel.frame = CGRect(origin: CGPoint(x: self.titleLabel.trailing + 3, y: (height-self.countLabel.height)/2), size: self.countLabel.size)
+        self.titleLabel.frame = CGRect(origin: CGPoint(x: self.ipImageView.kRight + 3, y: (height-self.titleLabel.kHeight)/2), size: self.titleLabel.kSize)
+        self.countLabel.frame = CGRect(origin: CGPoint(x: self.titleLabel.kRight + 3, y: (height-self.countLabel.kHeight)/2), size: self.countLabel.kSize)
         
     }
     
